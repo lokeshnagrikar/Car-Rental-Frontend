@@ -60,7 +60,7 @@ const LocationsPage = () => {
   const [selectedLocation, setSelectedLocation] = useState(null);
 
   const { isLoaded, loadError } = useLoadScript({
-    googleMapsApiKey: "AIzaSyAXvLxuBrIbVUAG3VCWkG5r_JsbMlbg1Xc"
+    googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
   });
 
   const regions = ["All", ...new Set(locationsData.map((loc) => loc.region))];
