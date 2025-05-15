@@ -14,8 +14,15 @@ import ForgotPasswordPage from "./pages/ForgotPasswordPage"
 import ResetPasswordPage from "./pages/ResetPasswordPage"
 import CarsPage from "./pages/CarsPage"
 import CarDetailsPage from "./pages/CarDetailsPage"
-import Terms from "./pages/TermsPage"
-import Privacy from "./pages/PrivacyPage"
+import Privacy from "./pages/PrivacyPolicyPage"
+import ContactUsPage from "./pages/ContactUsPage"
+import FAQPage from "./pages/FAQPage"
+import ServicesPage from "./pages/ServicesPage"
+import BlogPage from "./pages/BlogPage"
+import LocationsPage from "./pages/LocationsPage"
+import TermsPage from "./pages/TermsPage"
+import PrivacyPolicyPage from "./pages/PrivacyPolicyPage"
+
 
 // Protected Pages
 import ProfilePage from "./pages/ProfilePage"
@@ -36,6 +43,7 @@ import AdminPaymentsPage from "./pages/admin/PaymentsPage"
 import ProtectedRoute from "./components/guards/ProtectedRoute"
 import AdminRoute from "./components/guards/AdminRoute"
 import PublicRoute from "./components/guards/PublicRoute"
+import AboutUsPage from "./pages/AboutUsPage"
 
 function App() {
   const { loading } = useAuth()
@@ -55,8 +63,17 @@ function App() {
         <Route index element={<HomePage />} />
         <Route path="cars" element={<CarsPage />} />
         <Route path="cars/:id" element={<CarDetailsPage />} />
-        <Route path="/terms" element={<Terms/> } ></Route>
+    
          <Route path="/privacy" element={<Privacy/> } ></Route>
+        <Route path="about" element={<AboutUsPage/>} />
+    
+          <Route path="/services" element={<ServicesPage/>} />
+          <Route path="/blog" element={<BlogPage />} />
+          <Route path="/contact" element={<ContactUsPage />} />
+          <Route path="/faq" element={<FAQPage />} />
+          <Route path="/terms" element={<TermsPage />} />
+          <Route path="/privacy" element={<PrivacyPolicyPage />} />
+          <Route path="/locations" element={<LocationsPage />} />
 
         <Route element={<PublicRoute />}>
           <Route path="login" element={<LoginPage />} />

@@ -9,12 +9,14 @@ import * as Yup from "yup"
 import DatePicker from "react-datepicker"
 import "react-datepicker/dist/react-datepicker.css"
 import { format, differenceInDays, addDays } from "date-fns"
-import { TruckIcon, ArrowLeftIcon, CalendarIcon, CurrencyDollarIcon } from "@heroicons/react/24/outline"
+import { TruckIcon, ArrowLeftIcon, CalendarIcon, CurrencyDollarIcon, MapPinIcon } from "@heroicons/react/24/outline"
 import toast from "react-hot-toast"
 
 const BookingSchema = Yup.object().shape({
   startDate: Yup.date().required("Start date is required").min(new Date(), "Start date must be in the future"),
   endDate: Yup.date().required("End date is required").min(Yup.ref("startDate"), "End date must be after start date"),
+  pickupLocation: Yup.string().required("Pickup location is required"),
+  dropOffLocation: Yup.string().required("Drop-off location is required"),
 })
 
 const BookingPage = () => {
@@ -29,14 +31,37 @@ const BookingPage = () => {
   const [startDate, setStartDate] = useState(addDays(new Date(), 1))
   const [endDate, setEndDate] = useState(addDays(new Date(), 2))
 
-
-  useEffect(() => {
-    if (!isAuthenticated) {
-      toast.error("Please login to book a car")
-      navigate("/login", { state: { from: `/booking/${carId}` } })
-      return
-    }
-  }, [isAuthenticated, navigate, carId])
+  // Location options
+  const locationOptions = [
+    { id: "downtown", name: "Downtown Office", address: "123 Main Street, Automotive City, AC 12345" },
+    {
+      id: "airport",
+      name: "Airport Terminal",
+      address: "Terminal 2, International Airport, Automotive City, AC 12346",
+    },
+    { id: "westside", name: "Westside Branch", address: "456 Ocean Drive, Westside, Automotive City, AC 12347" },
+    {
+      id: "southside",
+      name: "Southside Mall",
+      address: "789 Shopping Lane, Southside Mall, Automotive City, AC 12348",
+    },
+    {
+      id: "northbp",
+      name: "North Business Park",
+      address: "101 Corporate Blvd, North Business Park, Automotive City, AC 12349",
+    },
+    { id: "eastharbor", name: "East Harbor", address: "202 Harbor View, East Harbor, Automotive City, AC 12350" },
+    {
+      id: "university",
+      name: "University Campus",
+      address: "303 College Road, University District, Automotive City, AC 12351",
+    },
+    {
+      id: "convention",
+      name: "South Convention Center",
+      address: "404 Convention Way, South District, Automotive City, AC 12352",
+    },
+  ]
 
   const calculateTotalPrice = useCallback(
     (startDate, endDate) => {
@@ -85,6 +110,8 @@ const BookingPage = () => {
         carId: car.id,
         startDate: format(values.startDate, "yyyy-MM-dd"),
         endDate: format(values.endDate, "yyyy-MM-dd"),
+        pickupLocation: values.pickupLocation,
+        dropOffLocation: values.dropOffLocation,
       }
 
       const response = await createBooking(bookingData)
@@ -92,14 +119,7 @@ const BookingPage = () => {
       navigate(`/booking-details/${response.id}`)
     } catch (error) {
       console.error("Booking error:", error)
-      if (error.response?.status === 401) {
-        toast.error("Authentication required. Please log in again.")
-        // Redirect to login page
-        navigate("/login", { state: { from: `/booking/${carId}` } })
-      } else {
-        setError(error.response?.data?.message || "Failed to create booking. Please try again.")
-        toast.error("Failed to create booking. Please try again.")
-      }
+      setError(error.response?.data?.message || "Failed to create booking. Please try again.")
     } finally {
       setLoading(false)
     }
@@ -228,6 +248,8 @@ const BookingPage = () => {
                 initialValues={{
                   startDate: startDate,
                   endDate: endDate,
+                  pickupLocation: locationOptions[0].address,
+                  dropOffLocation: locationOptions[0].address,
                 }}
                 validationSchema={BookingSchema}
                 onSubmit={handleSubmit}
@@ -276,6 +298,52 @@ const BookingPage = () => {
                             className="shadow-sm focus:ring-primary-500 focus:border-primary-500 block w-full sm:text-sm border-gray-300 rounded-md"
                           />
                           <ErrorMessage name="endDate" component="div" className="text-red-500 text-xs mt-1" />
+                        </div>
+                      </div>
+
+                      <div>
+                        <label htmlFor="pickupLocation" className="block text-sm font-medium text-gray-700">
+                          <MapPinIcon className="h-5 w-5 inline mr-2 text-gray-400" />
+                          Pickup Location
+                        </label>
+                        <div className="mt-1">
+                          <select
+                            id="pickupLocation"
+                            name="pickupLocation"
+                            value={values.pickupLocation}
+                            onChange={(e) => setFieldValue("pickupLocation", e.target.value)}
+                            className="shadow-sm focus:ring-primary-500 focus:border-primary-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                          >
+                            {locationOptions.map((location) => (
+                              <option key={location.id} value={location.address}>
+                                {location.name} - {location.address}
+                              </option>
+                            ))}
+                          </select>
+                          <ErrorMessage name="pickupLocation" component="div" className="text-red-500 text-xs mt-1" />
+                        </div>
+                      </div>
+
+                      <div>
+                        <label htmlFor="dropOffLocation" className="block text-sm font-medium text-gray-700">
+                          <MapPinIcon className="h-5 w-5 inline mr-2 text-gray-400" />
+                          Drop-off Location
+                        </label>
+                        <div className="mt-1">
+                          <select
+                            id="dropOffLocation"
+                            name="dropOffLocation"
+                            value={values.dropOffLocation}
+                            onChange={(e) => setFieldValue("dropOffLocation", e.target.value)}
+                            className="shadow-sm focus:ring-primary-500 focus:border-primary-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                          >
+                            {locationOptions.map((location) => (
+                              <option key={location.id} value={location.address}>
+                                {location.name} - {location.address}
+                              </option>
+                            ))}
+                          </select>
+                          <ErrorMessage name="dropOffLocation" component="div" className="text-red-500 text-xs mt-1" />
                         </div>
                       </div>
 

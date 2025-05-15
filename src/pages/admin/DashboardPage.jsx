@@ -383,7 +383,7 @@ const DashboardPage = () => {
                         <div className="flex-shrink-0 h-10 w-10 overflow-hidden rounded-md">
                           {booking.car.imageUrl ? (
                             <img
-                              src={`http://localhost:8080/api/files/${booking.car.imageUrl}`}
+                              src={`http://localhost:8081/api/files/${booking.car.imageUrl}`}
                               alt={`${booking.car.make} ${booking.car.model}`}
                               className="h-full w-full object-cover"
                             />
