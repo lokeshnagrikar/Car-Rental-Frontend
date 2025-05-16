@@ -78,7 +78,8 @@ const MainLayout = () => {
                     >
                       <span className="sr-only">Open user menu</span>
                       <UserCircleIcon className="h-8 w-8 text-gray-400" />
-                      <span className="ml-2 text-gray-700">{currentUser.name}</span>
+                      <span className="ml-2 text-gray-700">{currentUser?.name || "Customer"}</span>
+
                     </button>
                   </div>
                   {isProfileMenuOpen && (

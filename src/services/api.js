@@ -1,6 +1,7 @@
 import axios from "axios"
-import authService from "./authService"
+import { logoutUser } from "./authService"
 
+// Create axios instance with base URL
 const api = axios.create({
   baseURL: "http://localhost:8081/api",
   headers: {
@@ -8,10 +9,10 @@ const api = axios.create({
   },
 })
 
-// Request interceptor for API calls
+// Add a request interceptor to include auth token
 api.interceptors.request.use(
   (config) => {
-    const token = authService.getToken()
+    const token = localStorage.getItem("token")
     if (token) {
       config.headers["Authorization"] = `Bearer ${token}`
     }
@@ -22,37 +23,23 @@ api.interceptors.request.use(
   },
 )
 
-// Response interceptor for API calls
+// Add a response interceptor to handle common errors
 api.interceptors.response.use(
   (response) => {
     return response
   },
-  async (error) => {
-    const originalRequest = error.config
+  (error) => {
+    // Handle authentication errors
+    if (error.response && error.response.status === 401) {
+      // Clear token if it's expired or invalid
+      logoutUser()
 
-    // If the error is 401 and we haven't already tried to refresh the token
-    if (error.response?.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true
-
-      try {
-        // Try to refresh the token
-        const newToken = await authService.refreshToken()
-
-        // If we got a new token, retry the original request
-        if (newToken) {
-          originalRequest.headers["Authorization"] = `Bearer ${newToken}`
-          return api(originalRequest)
-        }
-      } catch (refreshError) {
-        // If refresh token fails, redirect to login
-        console.error("Token refresh failed:", refreshError)
-        authService.logout()
+      // Redirect to login page if not already there
+      if (window.location.pathname !== "/login") {
         window.location.href = "/login"
-        return Promise.reject(error)
       }
     }
 
-    // Handle other errors
     return Promise.reject(error)
   },
 )

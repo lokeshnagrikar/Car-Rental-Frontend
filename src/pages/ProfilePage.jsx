@@ -17,6 +17,8 @@ import {
   IdentificationIcon,
 } from "@heroicons/react/24/outline"
 import { motion } from "framer-motion"
+import { uploadProfilePicture } from "../services/userService"
+import api from "../services/api"
 
 const ProfileSchema = Yup.object().shape({
   name: Yup.string().required("Name is required"),
@@ -30,13 +32,15 @@ const ProfileSchema = Yup.object().shape({
 })
 
 const ProfilePage = () => {
-  const { currentUser, updateProfile } = useAuth()
+  const { currentUser, updateProfile, refreshUserData } = useAuth()
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
   const [success, setSuccess] = useState("")
   const [activeTab, setActiveTab] = useState("personal")
   const [profileImage, setProfileImage] = useState("/placeholder.svg?height=150&width=150")
+  const [uploadingImage, setUploadingImage] = useState(false)
+  const [apiBaseUrl, setApiBaseUrl] = useState("")
 
   // Initialize user data
   const [userData, setUserData] = useState({
@@ -51,6 +55,10 @@ const ProfilePage = () => {
   })
 
   useEffect(() => {
+    // Get API base URL from the api service
+    const baseUrl = api.defaults.baseURL || ""
+    setApiBaseUrl(baseUrl)
+
     if (currentUser) {
       setUserData((prev) => ({
         ...prev,
@@ -63,6 +71,11 @@ const ProfilePage = () => {
           : prev.dateOfBirth,
         drivingLicense: currentUser.drivingLicense || prev.drivingLicense,
       }))
+
+      // Set profile image if available
+      if (currentUser.profilePicture) {
+        setProfileImage(`${baseUrl}/files/${currentUser.profilePicture}`)
+      }
     }
   }, [currentUser])
 
@@ -113,14 +126,49 @@ const ProfilePage = () => {
     setShowPassword(!showPassword)
   }
 
-  const handleImageChange = (e) => {
+  const handleImageChange = async (e) => {
     const file = e.target.files[0]
-    if (file) {
-      const reader = new FileReader()
-      reader.onloadend = () => {
-        setProfileImage(reader.result)
+    if (!file) return
+
+    // Check if file is an image
+    if (!file.type.startsWith("image/")) {
+      setError("Please select an image file")
+      return
+    }
+
+    // Preview the image
+    const reader = new FileReader()
+    reader.onloadend = () => {
+      setProfileImage(reader.result)
+    }
+    reader.readAsDataURL(file)
+
+    // Upload the image
+    setUploadingImage(true)
+    setError("")
+    setSuccess("")
+
+    try {
+      const formData = new FormData()
+      formData.append("file", file)
+
+      await uploadProfilePicture(currentUser.id, formData)
+      setSuccess("Profile picture updated successfully")
+
+      // Refresh user data to get the updated profile picture URL
+      await refreshUserData()
+    } catch (error) {
+      setError("Failed to upload profile picture. Please try again.")
+      console.error("Profile picture upload error:", error)
+
+      // Reset profile image to the current one
+      if (currentUser.profilePicture) {
+        setProfileImage(`${apiBaseUrl}/files/${currentUser.profilePicture}`)
+      } else {
+        setProfileImage("/placeholder.svg?height=150&width=150")
       }
-      reader.readAsDataURL(file)
+    } finally {
+      setUploadingImage(false)
     }
   }
 
@@ -145,6 +193,30 @@ const ProfilePage = () => {
               <div className="relative">
                 <div className="h-32 w-32 rounded-full overflow-hidden bg-gray-100 border-4 border-white shadow-lg">
                   <img src={profileImage || "/placeholder.svg"} alt="Profile" className="h-full w-full object-cover" />
+                  {uploadingImage && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                      <svg
+                        className="animate-spin h-8 w-8 text-white"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                      >
+                        <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                        ></circle>
+                        <path
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                        ></path>
+                      </svg>
+                    </div>
+                  )}
                 </div>
                 <label
                   htmlFor="profile-image"
@@ -157,6 +229,7 @@ const ProfilePage = () => {
                     className="hidden"
                     accept="image/*"
                     onChange={handleImageChange}
+                    disabled={uploadingImage}
                   />
                 </label>
               </div>

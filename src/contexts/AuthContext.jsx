@@ -1,6 +1,13 @@
 "use client"
 import { createContext, useContext, useState, useEffect } from "react"
-import authService from "../services/authService"
+import {
+  loginUser,
+  registerUser,
+  logoutUser,
+  getCurrentUser,
+  updateUserProfile,
+  initializeAuth,
+} from "../services/authService"
 
 // Create the context
 const AuthContext = createContext()
@@ -27,27 +34,26 @@ export const AuthProvider = ({ children }) => {
     const initAuth = async () => {
       setLoading(true)
       try {
-        // Check if token exists
-        const user = authService.getCurrentUser()
+        // Check if token exists in localStorage
+        const hasToken = initializeAuth()
 
-        if (user) {
-          setCurrentUser(user)
-          setIsAuthenticated(true)
-          setIsAdmin(user.role === "ADMIN")
-        } else {
-          // Try refreshing token if user is not available
-          await authService.refreshToken()
-          const refreshedUser = authService.getCurrentUser()
-          if (refreshedUser) {
-            setCurrentUser(refreshedUser)
+        if (hasToken) {
+          // Fetch current user data
+          const response = await getCurrentUser()
+          if (response.success) {
+            setCurrentUser(response.user)
             setIsAuthenticated(true)
-            setIsAdmin(refreshedUser.role === "ADMIN")
+            setIsAdmin(response.user.role === "ADMIN")
+          } else {
+            // If token is invalid, clear auth state
+            setCurrentUser(null)
+            setIsAuthenticated(false)
+            setIsAdmin(false)
           }
         }
       } catch (err) {
         console.error("Auth initialization error:", err)
         setError("Failed to initialize authentication")
-        authService.logout()
       } finally {
         setLoading(false)
       }
@@ -57,14 +63,16 @@ export const AuthProvider = ({ children }) => {
   }, [])
 
   // Login function
-  const login = async (email, password, rememberMe = false) => {
+  const login = async (email, password) => {
     setError(null)
     try {
-      const user = await authService.login(email, password, rememberMe)
-      setCurrentUser(user)
-      setIsAuthenticated(true)
-      setIsAdmin(user.role === "ADMIN")
-      return { success: true, user }
+      const response = await loginUser(email, password)
+      if (response.success) {
+        setCurrentUser(response.user)
+        setIsAuthenticated(true)
+        setIsAdmin(response.user.role === "ADMIN")
+      }
+      return response
     } catch (err) {
       setError("Login failed")
       return { success: false, message: "Login failed" }
@@ -72,11 +80,11 @@ export const AuthProvider = ({ children }) => {
   }
 
   // Register function
-  const register = async (userData) => {
+  const register = async (name, email, password) => {
     setError(null)
     try {
-      const response = await authService.register(userData)
-      return { success: true, data: response }
+      const response = await registerUser(name, email, password)
+      return response
     } catch (err) {
       setError("Registration failed")
       return { success: false, message: "Registration failed" }
@@ -85,7 +93,7 @@ export const AuthProvider = ({ children }) => {
 
   // Logout function
   const logout = () => {
-    authService.logout()
+    logoutUser()
     setCurrentUser(null)
     setIsAuthenticated(false)
     setIsAdmin(false)
@@ -95,7 +103,7 @@ export const AuthProvider = ({ children }) => {
   const updateProfile = async (userData) => {
     setError(null)
     try {
-      const response = await authService.updateUserProfile(userData)
+      const response = await updateUserProfile(userData)
       if (response.success) {
         setCurrentUser(response.user)
       }
@@ -103,6 +111,21 @@ export const AuthProvider = ({ children }) => {
     } catch (err) {
       setError("Profile update failed")
       return { success: false, message: "Profile update failed" }
+    }
+  }
+
+  // Refresh user data function
+  const refreshUserData = async () => {
+    try {
+      const response = await getCurrentUser()
+      if (response.success) {
+        setCurrentUser(response.user)
+        return true
+      }
+      return false
+    } catch (err) {
+      console.error("Error refreshing user data:", err)
+      return false
     }
   }
 
@@ -117,6 +140,7 @@ export const AuthProvider = ({ children }) => {
     register,
     logout,
     updateProfile,
+    refreshUserData,
   }
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

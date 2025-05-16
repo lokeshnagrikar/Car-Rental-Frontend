@@ -53,3 +53,17 @@ export const deleteUser = async (id) => {
     throw error
   }
 }
+
+export const uploadProfilePicture = async (userId, formData) => {
+  try {
+    const response = await api.post(`/users/${userId}/profile-picture`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    })
+    return response.data
+  } catch (error) {
+    console.error("Error uploading profile picture:", error)
+    throw error
+  }
+}
