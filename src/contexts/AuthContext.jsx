@@ -50,10 +50,19 @@ export const AuthProvider = ({ children }) => {
             setIsAuthenticated(false)
             setIsAdmin(false)
           }
+        } else {
+          // No token found, ensure auth state is cleared
+          setCurrentUser(null)
+          setIsAuthenticated(false)
+          setIsAdmin(false)
         }
       } catch (err) {
         console.error("Auth initialization error:", err)
         setError("Failed to initialize authentication")
+        // Ensure auth state is cleared on error
+        setCurrentUser(null)
+        setIsAuthenticated(false)
+        setIsAdmin(false)
       } finally {
         setLoading(false)
       }
@@ -65,6 +74,7 @@ export const AuthProvider = ({ children }) => {
   // Login function
   const login = async (email, password) => {
     setError(null)
+    setLoading(true)
     try {
       const response = await loginUser(email, password)
       if (response.success) {
@@ -76,6 +86,8 @@ export const AuthProvider = ({ children }) => {
     } catch (err) {
       setError("Login failed")
       return { success: false, message: "Login failed" }
+    } finally {
+      setLoading(false)
     }
   }
 

@@ -2,6 +2,7 @@
 import { useState } from "react"
 import { Outlet, Link, useNavigate, useLocation } from "react-router-dom"
 import { useAuth } from "../contexts/AuthContext"
+import { useTheme } from "../contexts/ThemeContext"
 import {
   Bars3Icon,
   XMarkIcon,
@@ -13,12 +14,14 @@ import {
   PowerIcon,
   TruckIcon,
 } from "@heroicons/react/24/outline"
+import ThemeToggle from "../components/ThemeToggle"
 
 const AdminLayout = () => {
   const { currentUser, logout } = useAuth()
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
   const navigate = useNavigate()
   const location = useLocation()
+  const { isDarkMode } = useTheme()
 
   const handleLogout = () => {
     logout()
@@ -38,30 +41,32 @@ const AdminLayout = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 transition-colors duration-200">
       {/* Sidebar for desktop */}
       <div className="hidden md:fixed md:inset-y-0 md:flex md:w-64 md:flex-col">
-        <div className="flex min-h-0 flex-1 flex-col border-r border-gray-200 bg-white">
+        <div className="flex min-h-0 flex-1 flex-col border-r border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
           <div className="flex flex-1 flex-col overflow-y-auto pt-5 pb-4">
             <div className="flex flex-shrink-0 items-center px-4">
-              <Link to="/" className="text-xl font-bold text-primary-600">
+              <Link to="/" className="text-xl font-bold text-primary-600 dark:text-primary-400">
                 CarRental Admin
               </Link>
             </div>
-            <nav className="mt-5 flex-1 space-y-1 bg-white px-2">
+            <nav className="mt-5 flex-1 space-y-1 bg-white dark:bg-gray-800 px-2">
               {navigation.map((item) => (
                 <Link
                   key={item.name}
                   to={item.href}
                   className={`${
                     isActive(item.href)
-                      ? "bg-primary-50 text-primary-600"
-                      : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                      ? "bg-primary-50 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400"
+                      : "text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white"
                   } group flex items-center px-2 py-2 text-sm font-medium rounded-md`}
                 >
                   <item.icon
                     className={`${
-                      isActive(item.href) ? "text-primary-500" : "text-gray-400 group-hover:text-gray-500"
+                      isActive(item.href)
+                        ? "text-primary-500 dark:text-primary-400"
+                        : "text-gray-400 dark:text-gray-500 group-hover:text-gray-500 dark:group-hover:text-gray-300"
                     } mr-3 h-6 w-6 flex-shrink-0`}
                     aria-hidden="true"
                   />
@@ -70,33 +75,36 @@ const AdminLayout = () => {
               ))}
             </nav>
           </div>
-          <div className="flex flex-shrink-0 border-t border-gray-200 p-4">
+          <div className="flex flex-shrink-0 border-t border-gray-200 dark:border-gray-700 p-4">
             <div className="flex items-center">
               <div>
                 <UserCircleIcon className="h-9 w-9 text-gray-400" />
               </div>
               <div className="ml-3">
-                <p className="text-sm font-medium text-gray-700">{currentUser?.name}</p>
-                <p className="text-xs font-medium text-gray-500">{currentUser?.email}</p>
+                <p className="text-sm font-medium text-gray-700 dark:text-gray-300">{currentUser?.name}</p>
+                <p className="text-xs font-medium text-gray-500 dark:text-gray-400">{currentUser?.email}</p>
               </div>
             </div>
-            <button
-              onClick={handleLogout}
-              className="ml-auto flex flex-shrink-0 items-center text-sm text-gray-500 hover:text-gray-700"
-            >
-              <PowerIcon className="h-5 w-5 mr-1" />
-              <span className="sr-only">Logout</span>
-            </button>
+            <div className="ml-auto flex items-center space-x-2">
+              <ThemeToggle />
+              <button
+                onClick={handleLogout}
+                className="flex flex-shrink-0 items-center text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
+              >
+                <PowerIcon className="h-5 w-5 mr-1" />
+                <span className="sr-only">Logout</span>
+              </button>
+            </div>
           </div>
         </div>
       </div>
 
       {/* Mobile menu */}
       <div className="md:pl-64 flex flex-col flex-1">
-        <div className="sticky top-0 z-10 bg-white pl-1 pt-1 sm:pl-3 sm:pt-3 md:hidden">
+        <div className="sticky top-0 z-10 bg-white dark:bg-gray-800 pl-1 pt-1 sm:pl-3 sm:pt-3 md:hidden">
           <button
             type="button"
-            className="-ml-0.5 -mt-0.5 inline-flex h-12 w-12 items-center justify-center rounded-md text-gray-500 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-500"
+            className="-ml-0.5 -mt-0.5 inline-flex h-12 w-12 items-center justify-center rounded-md text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-500"
             onClick={() => setIsSidebarOpen(true)}
           >
             <span className="sr-only">Open sidebar</span>
@@ -108,7 +116,7 @@ const AdminLayout = () => {
         {isSidebarOpen && (
           <div className="fixed inset-0 z-40 flex md:hidden">
             <div className="fixed inset-0 bg-gray-600 bg-opacity-75" onClick={() => setIsSidebarOpen(false)}></div>
-            <div className="relative flex w-full max-w-xs flex-1 flex-col bg-white">
+            <div className="relative flex w-full max-w-xs flex-1 flex-col bg-white dark:bg-gray-800">
               <div className="absolute top-0 right-0 -mr-12 pt-2">
                 <button
                   type="button"
@@ -121,7 +129,7 @@ const AdminLayout = () => {
               </div>
               <div className="h-0 flex-1 overflow-y-auto pt-5 pb-4">
                 <div className="flex flex-shrink-0 items-center px-4">
-                  <Link to="/" className="text-xl font-bold text-primary-600">
+                  <Link to="/" className="text-xl font-bold text-primary-600 dark:text-primary-400">
                     CarRental Admin
                   </Link>
                 </div>
@@ -132,35 +140,43 @@ const AdminLayout = () => {
                       to={item.href}
                       className={`${
                         isActive(item.href)
-                          ? "bg-primary-50 text-primary-600"
-                          : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                          ? "bg-primary-50 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400"
+                          : "text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white"
                       } group flex items-center px-2 py-2 text-base font-medium rounded-md`}
                       onClick={() => setIsSidebarOpen(false)}
                     >
                       <item.icon
                         className={`${
-                          isActive(item.href) ? "text-primary-500" : "text-gray-400 group-hover:text-gray-500"
+                          isActive(item.href)
+                            ? "text-primary-500 dark:text-primary-400"
+                            : "text-gray-400 dark:text-gray-500 group-hover:text-gray-500 dark:group-hover:text-gray-300"
                         } mr-4 h-6 w-6 flex-shrink-0`}
                         aria-hidden="true"
                       />
                       {item.name}
                     </Link>
                   ))}
+                  <div className="px-2 py-2 flex items-center">
+                    <ThemeToggle />
+                    <span className="ml-2 text-sm text-gray-600 dark:text-gray-300">
+                      {isDarkMode ? "Dark Mode" : "Light Mode"}
+                    </span>
+                  </div>
                 </nav>
               </div>
-              <div className="flex flex-shrink-0 border-t border-gray-200 p-4">
+              <div className="flex flex-shrink-0 border-t border-gray-200 dark:border-gray-700 p-4">
                 <div className="flex items-center">
                   <div>
                     <UserCircleIcon className="h-9 w-9 text-gray-400" />
                   </div>
                   <div className="ml-3">
-                    <p className="text-sm font-medium text-gray-700">{currentUser?.name}</p>
-                    <p className="text-xs font-medium text-gray-500">{currentUser?.email}</p>
+                    <p className="text-sm font-medium text-gray-700 dark:text-gray-300">{currentUser?.name}</p>
+                    <p className="text-xs font-medium text-gray-500 dark:text-gray-400">{currentUser?.email}</p>
                   </div>
                 </div>
                 <button
                   onClick={handleLogout}
-                  className="ml-auto flex flex-shrink-0 items-center text-sm text-gray-500 hover:text-gray-700"
+                  className="ml-auto flex flex-shrink-0 items-center text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
                 >
                   <PowerIcon className="h-5 w-5 mr-1" />
                   <span className="sr-only">Logout</span>

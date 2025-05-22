@@ -233,20 +233,23 @@ const ContactUsPage = () => {
             </div>
 
             {/* Map */}
-            <div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">Our Location</h2>
-              <div className="bg-white rounded-lg shadow-md p-2 h-[500px]">
-                {/* Placeholder for map - in a real application, you would integrate Google Maps or similar */}
-                <div className="w-full h-full bg-gray-200 flex items-center justify-center">
-                  <div className="text-center p-4">
-                    <MapPinIcon className="h-12 w-12 text-gray-400 mx-auto" />
-                    <p className="mt-2 text-gray-500">Map would be displayed here</p>
-                    <p className="text-sm text-gray-400">123 Rental Street, Automotive City, AC 12345</p>
-                  </div>
-                </div>
-              </div>
+                  <div>
+                    <h2 className="text-2xl font-bold text-gray-900 mb-6">Our Location</h2>
+                    <div className="bg-white rounded-lg shadow-md p-2 h-[500px]">
+                    {/* Google Map Embed */}
+                    <iframe
+                      title="Our Location"
+                      src="https://www.google.com/maps?q=123+Rental+Street,+Automotive+City,+AC+12345&output=embed"
+                      width="100%"
+                      height="100%"
+                      style={{ border: 0, borderRadius: '0.5rem', width: '100%', height: '100%' }}
+                      allowFullScreen=""
+                      loading="lazy"
+                      referrerPolicy="no-referrer-when-downgrade"
+                    ></iframe>
+                    </div>
 
-              {/* Directions */}
+                    {/* Directions */}
               <div className="mt-6 bg-white rounded-lg shadow-md p-6">
                 <h3 className="text-lg font-medium text-gray-900 mb-4">Getting Here</h3>
                 <div className="space-y-4">

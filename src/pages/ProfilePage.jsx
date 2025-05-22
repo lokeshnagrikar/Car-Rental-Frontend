@@ -19,6 +19,7 @@ import {
 import { motion } from "framer-motion"
 import { uploadProfilePicture } from "../services/userService"
 import api from "../services/api"
+import { useTheme } from "../contexts/ThemeContext"
 
 const ProfileSchema = Yup.object().shape({
   name: Yup.string().required("Name is required"),
@@ -33,6 +34,7 @@ const ProfileSchema = Yup.object().shape({
 
 const ProfilePage = () => {
   const { currentUser, updateProfile, refreshUserData } = useAuth()
+  const { isDarkMode } = useTheme()
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
@@ -178,20 +180,32 @@ const ProfilePage = () => {
   }
 
   return (
-    <div className="bg-gray-50 min-h-screen py-12">
+    <div className={`${isDarkMode ? "bg-gray-900" : "bg-gray-50"} min-h-screen py-12 transition-colors duration-200`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
-          <h1 className="text-3xl font-extrabold text-gray-900 sm:text-4xl">Your Profile</h1>
-          <p className="mt-3 max-w-2xl mx-auto text-xl text-gray-500 sm:mt-4">
+          <h1
+            className={`text-3xl font-extrabold ${isDarkMode ? "text-white" : "text-gray-900"} sm:text-4xl transition-colors duration-200`}
+          >
+            Your Profile
+          </h1>
+          <p
+            className={`mt-3 max-w-2xl mx-auto text-xl ${isDarkMode ? "text-gray-300" : "text-gray-500"} sm:mt-4 transition-colors duration-200`}
+          >
             Manage your personal information and account preferences
           </p>
         </div>
 
-        <div className="bg-white shadow overflow-hidden sm:rounded-lg">
-          <div className="border-b border-gray-200">
+        <div
+          className={`${isDarkMode ? "bg-gray-800" : "bg-white"} shadow overflow-hidden sm:rounded-lg transition-colors duration-200`}
+        >
+          <div
+            className={`border-b ${isDarkMode ? "border-gray-700" : "border-gray-200"} transition-colors duration-200`}
+          >
             <div className="flex justify-center sm:justify-start px-4 py-5 sm:px-6">
               <div className="relative">
-                <div className="h-32 w-32 rounded-full overflow-hidden bg-gray-100 border-4 border-white shadow-lg">
+                <div
+                  className={`h-32 w-32 rounded-full overflow-hidden ${isDarkMode ? "bg-gray-700" : "bg-gray-100"} border-4 ${isDarkMode ? "border-gray-700" : "border-white"} shadow-lg transition-colors duration-200`}
+                >
                   <img src={profileImage || "/placeholder.svg"} alt="Profile" className="h-full w-full object-cover" />
                   {uploadingImage && (
                     <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50">
@@ -234,28 +248,54 @@ const ProfilePage = () => {
                 </label>
               </div>
               <div className="ml-6 pt-1 hidden sm:block">
-                <h2 className="text-2xl font-bold text-gray-900">{userData.name}</h2>
-                <p className="text-sm font-medium text-gray-500">{userData.email}</p>
-                <p className="mt-1 text-sm text-gray-500">Member since {new Date().getFullYear()}</p>
+                <h2
+                  className={`text-2xl font-bold ${isDarkMode ? "text-white" : "text-gray-900"} transition-colors duration-200`}
+                >
+                  {userData.name}
+                </h2>
+                <p
+                  className={`text-sm font-medium ${isDarkMode ? "text-gray-300" : "text-gray-500"} transition-colors duration-200`}
+                >
+                  {userData.email}
+                </p>
+                <p
+                  className={`mt-1 text-sm ${isDarkMode ? "text-gray-400" : "text-gray-500"} transition-colors duration-200`}
+                >
+                  Member since {new Date().getFullYear()}
+                </p>
               </div>
             </div>
 
             {/* Mobile name display */}
             <div className="sm:hidden text-center mt-4">
-              <h2 className="text-2xl font-bold text-gray-900">{userData.name}</h2>
-              <p className="text-sm font-medium text-gray-500">{userData.email}</p>
-              <p className="mt-1 text-sm text-gray-500">Member since {new Date().getFullYear()}</p>
+              <h2
+                className={`text-2xl font-bold ${isDarkMode ? "text-white" : "text-gray-900"} transition-colors duration-200`}
+              >
+                {userData.name}
+              </h2>
+              <p
+                className={`text-sm font-medium ${isDarkMode ? "text-gray-300" : "text-gray-500"} transition-colors duration-200`}
+              >
+                {userData.email}
+              </p>
+              <p
+                className={`mt-1 text-sm ${isDarkMode ? "text-gray-400" : "text-gray-500"} transition-colors duration-200`}
+              >
+                Member since {new Date().getFullYear()}
+              </p>
             </div>
 
-            <div className="border-t border-gray-200 px-4 py-5 sm:px-6">
+            <div
+              className={`border-t ${isDarkMode ? "border-gray-700" : "border-gray-200"} px-4 py-5 sm:px-6 transition-colors duration-200`}
+            >
               <div className="flex justify-center sm:justify-start space-x-8">
                 <button
                   onClick={() => setActiveTab("personal")}
                   className={`pb-4 border-b-2 font-medium text-sm ${
                     activeTab === "personal"
                       ? "border-primary-500 text-primary-600"
-                      : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                  }`}
+                      : `border-transparent ${isDarkMode ? "text-gray-400 hover:text-gray-300 hover:border-gray-600" : "text-gray-500 hover:text-gray-700 hover:border-gray-300"}`
+                  } transition-colors duration-200`}
                 >
                   Personal Information
                 </button>
@@ -264,8 +304,8 @@ const ProfilePage = () => {
                   className={`pb-4 border-b-2 font-medium text-sm ${
                     activeTab === "security"
                       ? "border-primary-500 text-primary-600"
-                      : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                  }`}
+                      : `border-transparent ${isDarkMode ? "text-gray-400 hover:text-gray-300 hover:border-gray-600" : "text-gray-500 hover:text-gray-700 hover:border-gray-300"}`
+                  } transition-colors duration-200`}
                 >
                   Security
                 </button>
@@ -274,8 +314,8 @@ const ProfilePage = () => {
                   className={`pb-4 border-b-2 font-medium text-sm ${
                     activeTab === "preferences"
                       ? "border-primary-500 text-primary-600"
-                      : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                  }`}
+                      : `border-transparent ${isDarkMode ? "text-gray-400 hover:text-gray-300 hover:border-gray-600" : "text-gray-500 hover:text-gray-700 hover:border-gray-300"}`
+                  } transition-colors duration-200`}
                 >
                   Preferences
                 </button>
@@ -289,7 +329,7 @@ const ProfilePage = () => {
                 initial="hidden"
                 animate="visible"
                 variants={fadeIn}
-                className="mb-6 rounded-md bg-red-50 p-4"
+                className={`mb-6 rounded-md ${isDarkMode ? "bg-red-900/20" : "bg-red-50"} p-4 transition-colors duration-200`}
               >
                 <div className="flex">
                   <div className="flex-shrink-0">
@@ -307,7 +347,11 @@ const ProfilePage = () => {
                     </svg>
                   </div>
                   <div className="ml-3">
-                    <h3 className="text-sm font-medium text-red-800">{error}</h3>
+                    <h3
+                      className={`text-sm font-medium ${isDarkMode ? "text-red-400" : "text-red-800"} transition-colors duration-200`}
+                    >
+                      {error}
+                    </h3>
                   </div>
                 </div>
               </motion.div>
@@ -318,7 +362,7 @@ const ProfilePage = () => {
                 initial="hidden"
                 animate="visible"
                 variants={fadeIn}
-                className="mb-6 rounded-md bg-green-50 p-4"
+                className={`mb-6 rounded-md ${isDarkMode ? "bg-green-900/20" : "bg-green-50"} p-4 transition-colors duration-200`}
               >
                 <div className="flex">
                   <div className="flex-shrink-0">
@@ -336,7 +380,11 @@ const ProfilePage = () => {
                     </svg>
                   </div>
                   <div className="ml-3">
-                    <h3 className="text-sm font-medium text-green-800">{success}</h3>
+                    <h3
+                      className={`text-sm font-medium ${isDarkMode ? "text-green-400" : "text-green-800"} transition-colors duration-200`}
+                    >
+                      {success}
+                    </h3>
                   </div>
                 </div>
               </motion.div>
@@ -354,110 +402,164 @@ const ProfilePage = () => {
                     <motion.div initial="hidden" animate="visible" variants={fadeIn} className="space-y-6">
                       <div className="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
                         <div className="sm:col-span-3">
-                          <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+                          <label
+                            htmlFor="name"
+                            className={`block text-sm font-medium ${isDarkMode ? "text-gray-300" : "text-gray-700"} transition-colors duration-200`}
+                          >
                             Full Name
                           </label>
                           <div className="mt-1 relative rounded-md shadow-sm">
                             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                              <UserIcon className="h-5 w-5 text-gray-400" />
+                              <UserIcon
+                                className={`h-5 w-5 ${isDarkMode ? "text-gray-500" : "text-gray-400"} transition-colors duration-200`}
+                              />
                             </div>
                             <Field
                               id="name"
                               name="name"
                               type="text"
                               autoComplete="name"
-                              className="pl-10 focus:ring-primary-500 focus:border-primary-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                              className={`pl-10 focus:ring-primary-500 focus:border-primary-500 block w-full sm:text-sm ${
+                                isDarkMode
+                                  ? "bg-gray-700 border-gray-600 text-white"
+                                  : "bg-white border-gray-300 text-gray-900"
+                              } rounded-md transition-colors duration-200`}
                             />
                           </div>
                           <ErrorMessage name="name" component="div" className="mt-1 text-red-500 text-xs" />
                         </div>
 
                         <div className="sm:col-span-3">
-                          <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                          <label
+                            htmlFor="email"
+                            className={`block text-sm font-medium ${isDarkMode ? "text-gray-300" : "text-gray-700"} transition-colors duration-200`}
+                          >
                             Email Address
                           </label>
                           <div className="mt-1 relative rounded-md shadow-sm">
                             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                              <EnvelopeIcon className="h-5 w-5 text-gray-400" />
+                              <EnvelopeIcon
+                                className={`h-5 w-5 ${isDarkMode ? "text-gray-500" : "text-gray-400"} transition-colors duration-200`}
+                              />
                             </div>
                             <Field
                               id="email"
                               name="email"
                               type="email"
                               autoComplete="email"
-                              className="pl-10 focus:ring-primary-500 focus:border-primary-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                              className={`pl-10 focus:ring-primary-500 focus:border-primary-500 block w-full sm:text-sm ${
+                                isDarkMode
+                                  ? "bg-gray-700 border-gray-600 text-white"
+                                  : "bg-white border-gray-300 text-gray-900"
+                              } rounded-md transition-colors duration-200`}
                             />
                           </div>
                           <ErrorMessage name="email" component="div" className="mt-1 text-red-500 text-xs" />
                         </div>
 
                         <div className="sm:col-span-3">
-                          <label htmlFor="phone" className="block text-sm font-medium text-gray-700">
+                          <label
+                            htmlFor="phone"
+                            className={`block text-sm font-medium ${isDarkMode ? "text-gray-300" : "text-gray-700"} transition-colors duration-200`}
+                          >
                             Phone Number
                           </label>
                           <div className="mt-1 relative rounded-md shadow-sm">
                             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                              <PhoneIcon className="h-5 w-5 text-gray-400" />
+                              <PhoneIcon
+                                className={`h-5 w-5 ${isDarkMode ? "text-gray-500" : "text-gray-400"} transition-colors duration-200`}
+                              />
                             </div>
                             <Field
                               id="phone"
                               name="phone"
                               type="text"
-                              className="pl-10 focus:ring-primary-500 focus:border-primary-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                              className={`pl-10 focus:ring-primary-500 focus:border-primary-500 block w-full sm:text-sm ${
+                                isDarkMode
+                                  ? "bg-gray-700 border-gray-600 text-white"
+                                  : "bg-white border-gray-300 text-gray-900"
+                              } rounded-md transition-colors duration-200`}
                             />
                           </div>
                           <ErrorMessage name="phone" component="div" className="mt-1 text-red-500 text-xs" />
                         </div>
 
                         <div className="sm:col-span-3">
-                          <label htmlFor="dateOfBirth" className="block text-sm font-medium text-gray-700">
+                          <label
+                            htmlFor="dateOfBirth"
+                            className={`block text-sm font-medium ${isDarkMode ? "text-gray-300" : "text-gray-700"} transition-colors duration-200`}
+                          >
                             Date of Birth
                           </label>
                           <div className="mt-1 relative rounded-md shadow-sm">
                             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                              <CalendarIcon className="h-5 w-5 text-gray-400" />
+                              <CalendarIcon
+                                className={`h-5 w-5 ${isDarkMode ? "text-gray-500" : "text-gray-400"} transition-colors duration-200`}
+                              />
                             </div>
                             <Field
                               id="dateOfBirth"
                               name="dateOfBirth"
                               type="date"
-                              className="pl-10 focus:ring-primary-500 focus:border-primary-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                              className={`pl-10 focus:ring-primary-500 focus:border-primary-500 block w-full sm:text-sm ${
+                                isDarkMode
+                                  ? "bg-gray-700 border-gray-600 text-white"
+                                  : "bg-white border-gray-300 text-gray-900"
+                              } rounded-md transition-colors duration-200`}
                             />
                           </div>
                           <ErrorMessage name="dateOfBirth" component="div" className="mt-1 text-red-500 text-xs" />
                         </div>
 
                         <div className="sm:col-span-6">
-                          <label htmlFor="address" className="block text-sm font-medium text-gray-700">
+                          <label
+                            htmlFor="address"
+                            className={`block text-sm font-medium ${isDarkMode ? "text-gray-300" : "text-gray-700"} transition-colors duration-200`}
+                          >
                             Address
                           </label>
                           <div className="mt-1 relative rounded-md shadow-sm">
                             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                              <MapPinIcon className="h-5 w-5 text-gray-400" />
+                              <MapPinIcon
+                                className={`h-5 w-5 ${isDarkMode ? "text-gray-500" : "text-gray-400"} transition-colors duration-200`}
+                              />
                             </div>
                             <Field
                               id="address"
                               name="address"
                               type="text"
-                              className="pl-10 focus:ring-primary-500 focus:border-primary-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                              className={`pl-10 focus:ring-primary-500 focus:border-primary-500 block w-full sm:text-sm ${
+                                isDarkMode
+                                  ? "bg-gray-700 border-gray-600 text-white"
+                                  : "bg-white border-gray-300 text-gray-900"
+                              } rounded-md transition-colors duration-200`}
                             />
                           </div>
                           <ErrorMessage name="address" component="div" className="mt-1 text-red-500 text-xs" />
                         </div>
 
                         <div className="sm:col-span-6">
-                          <label htmlFor="drivingLicense" className="block text-sm font-medium text-gray-700">
+                          <label
+                            htmlFor="drivingLicense"
+                            className={`block text-sm font-medium ${isDarkMode ? "text-gray-300" : "text-gray-700"} transition-colors duration-200`}
+                          >
                             Driving License Number
                           </label>
                           <div className="mt-1 relative rounded-md shadow-sm">
                             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                              <IdentificationIcon className="h-5 w-5 text-gray-400" />
+                              <IdentificationIcon
+                                className={`h-5 w-5 ${isDarkMode ? "text-gray-500" : "text-gray-400"} transition-colors duration-200`}
+                              />
                             </div>
                             <Field
                               id="drivingLicense"
                               name="drivingLicense"
                               type="text"
-                              className="pl-10 focus:ring-primary-500 focus:border-primary-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                              className={`pl-10 focus:ring-primary-500 focus:border-primary-500 block w-full sm:text-sm ${
+                                isDarkMode
+                                  ? "bg-gray-700 border-gray-600 text-white"
+                                  : "bg-white border-gray-300 text-gray-900"
+                              } rounded-md transition-colors duration-200`}
                             />
                           </div>
                           <ErrorMessage name="drivingLicense" component="div" className="mt-1 text-red-500 text-xs" />
@@ -469,25 +571,42 @@ const ProfilePage = () => {
                   {activeTab === "security" && (
                     <motion.div initial="hidden" animate="visible" variants={fadeIn} className="space-y-6">
                       <div>
-                        <h3 className="text-lg font-medium leading-6 text-gray-900">Change Password</h3>
-                        <p className="mt-1 text-sm text-gray-500">Update your password to keep your account secure</p>
+                        <h3
+                          className={`text-lg font-medium leading-6 ${isDarkMode ? "text-white" : "text-gray-900"} transition-colors duration-200`}
+                        >
+                          Change Password
+                        </h3>
+                        <p
+                          className={`mt-1 text-sm ${isDarkMode ? "text-gray-300" : "text-gray-500"} transition-colors duration-200`}
+                        >
+                          Update your password to keep your account secure
+                        </p>
                       </div>
 
                       <div className="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
                         <div className="sm:col-span-6">
-                          <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+                          <label
+                            htmlFor="password"
+                            className={`block text-sm font-medium ${isDarkMode ? "text-gray-300" : "text-gray-700"} transition-colors duration-200`}
+                          >
                             New Password
                           </label>
                           <div className="mt-1 relative rounded-md shadow-sm">
                             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                              <LockClosedIcon className="h-5 w-5 text-gray-400" />
+                              <LockClosedIcon
+                                className={`h-5 w-5 ${isDarkMode ? "text-gray-500" : "text-gray-400"} transition-colors duration-200`}
+                              />
                             </div>
                             <Field
                               id="password"
                               name="password"
                               type={showPassword ? "text" : "password"}
                               autoComplete="new-password"
-                              className="pl-10 focus:ring-primary-500 focus:border-primary-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                              className={`pl-10 focus:ring-primary-500 focus:border-primary-500 block w-full sm:text-sm ${
+                                isDarkMode
+                                  ? "bg-gray-700 border-gray-600 text-white"
+                                  : "bg-white border-gray-300 text-gray-900"
+                              } rounded-md transition-colors duration-200`}
                             />
                             <button
                               type="button"
@@ -495,9 +614,13 @@ const ProfilePage = () => {
                               onClick={togglePasswordVisibility}
                             >
                               {showPassword ? (
-                                <EyeSlashIcon className="h-5 w-5 text-gray-400" />
+                                <EyeSlashIcon
+                                  className={`h-5 w-5 ${isDarkMode ? "text-gray-500" : "text-gray-400"} transition-colors duration-200`}
+                                />
                               ) : (
-                                <EyeIcon className="h-5 w-5 text-gray-400" />
+                                <EyeIcon
+                                  className={`h-5 w-5 ${isDarkMode ? "text-gray-500" : "text-gray-400"} transition-colors duration-200`}
+                                />
                               )}
                             </button>
                           </div>
@@ -505,19 +628,28 @@ const ProfilePage = () => {
                         </div>
 
                         <div className="sm:col-span-6">
-                          <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
+                          <label
+                            htmlFor="confirmPassword"
+                            className={`block text-sm font-medium ${isDarkMode ? "text-gray-300" : "text-gray-700"} transition-colors duration-200`}
+                          >
                             Confirm New Password
                           </label>
                           <div className="mt-1 relative rounded-md shadow-sm">
                             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                              <LockClosedIcon className="h-5 w-5 text-gray-400" />
+                              <LockClosedIcon
+                                className={`h-5 w-5 ${isDarkMode ? "text-gray-500" : "text-gray-400"} transition-colors duration-200`}
+                              />
                             </div>
                             <Field
                               id="confirmPassword"
                               name="confirmPassword"
                               type={showPassword ? "text" : "password"}
                               autoComplete="new-password"
-                              className="pl-10 focus:ring-primary-500 focus:border-primary-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                              className={`pl-10 focus:ring-primary-500 focus:border-primary-500 block w-full sm:text-sm ${
+                                isDarkMode
+                                  ? "bg-gray-700 border-gray-600 text-white"
+                                  : "bg-white border-gray-300 text-gray-900"
+                              } rounded-md transition-colors duration-200`}
                             />
                           </div>
                           <ErrorMessage name="confirmPassword" component="div" className="mt-1 text-red-500 text-xs" />
@@ -525,9 +657,17 @@ const ProfilePage = () => {
                       </div>
 
                       <div className="pt-5">
-                        <div className="bg-gray-50 p-4 rounded-md">
-                          <h4 className="text-sm font-medium text-gray-900">Password Requirements:</h4>
-                          <ul className="mt-2 text-xs text-gray-500 list-disc pl-5 space-y-1">
+                        <div
+                          className={`${isDarkMode ? "bg-gray-700" : "bg-gray-50"} p-4 rounded-md transition-colors duration-200`}
+                        >
+                          <h4
+                            className={`text-sm font-medium ${isDarkMode ? "text-white" : "text-gray-900"} transition-colors duration-200`}
+                          >
+                            Password Requirements:
+                          </h4>
+                          <ul
+                            className={`mt-2 text-xs ${isDarkMode ? "text-gray-300" : "text-gray-500"} list-disc pl-5 space-y-1 transition-colors duration-200`}
+                          >
                             <li>Minimum 6 characters</li>
                             <li>Include at least one uppercase letter</li>
                             <li>Include at least one number</li>
@@ -541,8 +681,16 @@ const ProfilePage = () => {
                   {activeTab === "preferences" && (
                     <motion.div initial="hidden" animate="visible" variants={fadeIn} className="space-y-6">
                       <div>
-                        <h3 className="text-lg font-medium leading-6 text-gray-900">Notification Preferences</h3>
-                        <p className="mt-1 text-sm text-gray-500">Decide what notifications you want to receive</p>
+                        <h3
+                          className={`text-lg font-medium leading-6 ${isDarkMode ? "text-white" : "text-gray-900"} transition-colors duration-200`}
+                        >
+                          Notification Preferences
+                        </h3>
+                        <p
+                          className={`mt-1 text-sm ${isDarkMode ? "text-gray-300" : "text-gray-500"} transition-colors duration-200`}
+                        >
+                          Decide what notifications you want to receive
+                        </p>
                       </div>
 
                       <div className="space-y-4">
@@ -552,14 +700,19 @@ const ProfilePage = () => {
                               id="emailNotifications"
                               name="emailNotifications"
                               type="checkbox"
-                              className="focus:ring-primary-500 h-4 w-4 text-primary-600 border-gray-300 rounded"
+                              className={`focus:ring-primary-500 h-4 w-4 text-primary-600 ${isDarkMode ? "bg-gray-700 border-gray-600" : "bg-white border-gray-300"} rounded transition-colors duration-200`}
                             />
                           </div>
                           <div className="ml-3 text-sm">
-                            <label htmlFor="emailNotifications" className="font-medium text-gray-700">
+                            <label
+                              htmlFor="emailNotifications"
+                              className={`font-medium ${isDarkMode ? "text-white" : "text-gray-700"} transition-colors duration-200`}
+                            >
                               Email Notifications
                             </label>
-                            <p className="text-gray-500">
+                            <p
+                              className={`${isDarkMode ? "text-gray-300" : "text-gray-500"} transition-colors duration-200`}
+                            >
                               Get notified about booking updates, promotions, and special offers
                             </p>
                           </div>
@@ -571,14 +724,19 @@ const ProfilePage = () => {
                               id="smsNotifications"
                               name="smsNotifications"
                               type="checkbox"
-                              className="focus:ring-primary-500 h-4 w-4 text-primary-600 border-gray-300 rounded"
+                              className={`focus:ring-primary-500 h-4 w-4 text-primary-600 ${isDarkMode ? "bg-gray-700 border-gray-600" : "bg-white border-gray-300"} rounded transition-colors duration-200`}
                             />
                           </div>
                           <div className="ml-3 text-sm">
-                            <label htmlFor="smsNotifications" className="font-medium text-gray-700">
+                            <label
+                              htmlFor="smsNotifications"
+                              className={`font-medium ${isDarkMode ? "text-white" : "text-gray-700"} transition-colors duration-200`}
+                            >
                               SMS Notifications
                             </label>
-                            <p className="text-gray-500">
+                            <p
+                              className={`${isDarkMode ? "text-gray-300" : "text-gray-500"} transition-colors duration-200`}
+                            >
                               Receive text messages for important updates about your bookings
                             </p>
                           </div>
@@ -590,14 +748,19 @@ const ProfilePage = () => {
                               id="marketingEmails"
                               name="marketingEmails"
                               type="checkbox"
-                              className="focus:ring-primary-500 h-4 w-4 text-primary-600 border-gray-300 rounded"
+                              className={`focus:ring-primary-500 h-4 w-4 text-primary-600 ${isDarkMode ? "bg-gray-700 border-gray-600" : "bg-white border-gray-300"} rounded transition-colors duration-200`}
                             />
                           </div>
                           <div className="ml-3 text-sm">
-                            <label htmlFor="marketingEmails" className="font-medium text-gray-700">
+                            <label
+                              htmlFor="marketingEmails"
+                              className={`font-medium ${isDarkMode ? "text-white" : "text-gray-700"} transition-colors duration-200`}
+                            >
                               Marketing Emails
                             </label>
-                            <p className="text-gray-500">
+                            <p
+                              className={`${isDarkMode ? "text-gray-300" : "text-gray-500"} transition-colors duration-200`}
+                            >
                               Receive emails about new services, discounts, and promotions
                             </p>
                           </div>
@@ -605,10 +768,17 @@ const ProfilePage = () => {
                       </div>
 
                       <div className="pt-5">
-                        <h3 className="text-lg font-medium leading-6 text-gray-900">Language & Region</h3>
+                        <h3
+                          className={`text-lg font-medium leading-6 ${isDarkMode ? "text-white" : "text-gray-900"} transition-colors duration-200`}
+                        >
+                          Language & Region
+                        </h3>
                         <div className="mt-4 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
                           <div className="sm:col-span-3">
-                            <label htmlFor="language" className="block text-sm font-medium text-gray-700">
+                            <label
+                              htmlFor="language"
+                              className={`block text-sm font-medium ${isDarkMode ? "text-gray-300" : "text-gray-700"} transition-colors duration-200`}
+                            >
                               Language
                             </label>
                             <div className="mt-1">
@@ -616,7 +786,11 @@ const ProfilePage = () => {
                                 as="select"
                                 id="language"
                                 name="language"
-                                className="shadow-sm focus:ring-primary-500 focus:border-primary-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                                className={`shadow-sm focus:ring-primary-500 focus:border-primary-500 block w-full sm:text-sm ${
+                                  isDarkMode
+                                    ? "bg-gray-700 border-gray-600 text-white"
+                                    : "bg-white border-gray-300 text-gray-900"
+                                } rounded-md transition-colors duration-200`}
                               >
                                 <option value="en">English</option>
                                 <option value="es">Spanish</option>
@@ -627,7 +801,10 @@ const ProfilePage = () => {
                           </div>
 
                           <div className="sm:col-span-3">
-                            <label htmlFor="currency" className="block text-sm font-medium text-gray-700">
+                            <label
+                              htmlFor="currency"
+                              className={`block text-sm font-medium ${isDarkMode ? "text-gray-300" : "text-gray-700"} transition-colors duration-200`}
+                            >
                               Currency
                             </label>
                             <div className="mt-1">
@@ -635,7 +812,11 @@ const ProfilePage = () => {
                                 as="select"
                                 id="currency"
                                 name="currency"
-                                className="shadow-sm focus:ring-primary-500 focus:border-primary-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                                className={`shadow-sm focus:ring-primary-500 focus:border-primary-500 block w-full sm:text-sm ${
+                                  isDarkMode
+                                    ? "bg-gray-700 border-gray-600 text-white"
+                                    : "bg-white border-gray-300 text-gray-900"
+                                } rounded-md transition-colors duration-200`}
                               >
                                 <option value="usd">USD ($)</option>
                                 <option value="eur">EUR (€)</option>
@@ -649,11 +830,17 @@ const ProfilePage = () => {
                     </motion.div>
                   )}
 
-                  <div className="pt-5 border-t border-gray-200">
+                  <div
+                    className={`pt-5 border-t ${isDarkMode ? "border-gray-700" : "border-gray-200"} transition-colors duration-200`}
+                  >
                     <div className="flex justify-end">
                       <button
                         type="button"
-                        className="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+                        className={`${
+                          isDarkMode
+                            ? "bg-gray-700 border-gray-600 text-gray-300 hover:bg-gray-600"
+                            : "bg-white border-gray-300 text-gray-700 hover:bg-gray-50"
+                        } py-2 px-4 border rounded-md shadow-sm text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors duration-200`}
                       >
                         Cancel
                       </button>
@@ -695,29 +882,81 @@ const ProfilePage = () => {
         </div>
 
         {/* Activity Section */}
-        <div className="mt-10 bg-white shadow overflow-hidden sm:rounded-lg">
+        <div
+          className={`mt-10 ${isDarkMode ? "bg-gray-800" : "bg-white"} shadow overflow-hidden sm:rounded-lg transition-colors duration-200`}
+        >
           <div className="px-4 py-5 sm:px-6">
-            <h3 className="text-lg leading-6 font-medium text-gray-900">Recent Activity</h3>
-            <p className="mt-1 max-w-2xl text-sm text-gray-500">Your recent bookings and account activity</p>
+            <h3
+              className={`text-lg leading-6 font-medium ${isDarkMode ? "text-white" : "text-gray-900"} transition-colors duration-200`}
+            >
+              Recent Activity
+            </h3>
+            <p
+              className={`mt-1 max-w-2xl text-sm ${isDarkMode ? "text-gray-300" : "text-gray-500"} transition-colors duration-200`}
+            >
+              Your recent bookings and account activity
+            </p>
           </div>
-          <div className="border-t border-gray-200">
+          <div
+            className={`border-t ${isDarkMode ? "border-gray-700" : "border-gray-200"} transition-colors duration-200`}
+          >
             <dl>
-              <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                <dt className="text-sm font-medium text-gray-500">Last login</dt>
-                <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{new Date().toLocaleString()}</dd>
+              <div
+                className={`${isDarkMode ? "bg-gray-700" : "bg-gray-50"} px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 transition-colors duration-200`}
+              >
+                <dt
+                  className={`text-sm font-medium ${isDarkMode ? "text-gray-300" : "text-gray-500"} transition-colors duration-200`}
+                >
+                  Last login
+                </dt>
+                <dd
+                  className={`mt-1 text-sm ${isDarkMode ? "text-white" : "text-gray-900"} sm:mt-0 sm:col-span-2 transition-colors duration-200`}
+                >
+                  {new Date().toLocaleString()}
+                </dd>
               </div>
-              <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                <dt className="text-sm font-medium text-gray-500">Recent booking</dt>
-                <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">Toyota Camry - May 10, 2023</dd>
+              <div
+                className={`${isDarkMode ? "bg-gray-800" : "bg-white"} px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 transition-colors duration-200`}
+              >
+                <dt
+                  className={`text-sm font-medium ${isDarkMode ? "text-gray-300" : "text-gray-500"} transition-colors duration-200`}
+                >
+                  Recent booking
+                </dt>
+                <dd
+                  className={`mt-1 text-sm ${isDarkMode ? "text-white" : "text-gray-900"} sm:mt-0 sm:col-span-2 transition-colors duration-200`}
+                >
+                  Toyota Camry - May 10, 2023
+                </dd>
               </div>
-              <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                <dt className="text-sm font-medium text-gray-500">Payment method</dt>
-                <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">Visa ending in 4242</dd>
+              <div
+                className={`${isDarkMode ? "bg-gray-700" : "bg-gray-50"} px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 transition-colors duration-200`}
+              >
+                <dt
+                  className={`text-sm font-medium ${isDarkMode ? "text-gray-300" : "text-gray-500"} transition-colors duration-200`}
+                >
+                  Payment method
+                </dt>
+                <dd
+                  className={`mt-1 text-sm ${isDarkMode ? "text-white" : "text-gray-900"} sm:mt-0 sm:col-span-2 transition-colors duration-200`}
+                >
+                  Visa ending in 4242
+                </dd>
               </div>
-              <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                <dt className="text-sm font-medium text-gray-500">Membership status</dt>
-                <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                  <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+              <div
+                className={`${isDarkMode ? "bg-gray-800" : "bg-white"} px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 transition-colors duration-200`}
+              >
+                <dt
+                  className={`text-sm font-medium ${isDarkMode ? "text-gray-300" : "text-gray-500"} transition-colors duration-200`}
+                >
+                  Membership status
+                </dt>
+                <dd
+                  className={`mt-1 text-sm ${isDarkMode ? "text-white" : "text-gray-900"} sm:mt-0 sm:col-span-2 transition-colors duration-200`}
+                >
+                  <span
+                    className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${isDarkMode ? "bg-green-900 text-green-300" : "bg-green-100 text-green-800"} transition-colors duration-200`}
+                  >
                     Active
                   </span>
                 </dd>
