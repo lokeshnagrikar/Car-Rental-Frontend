@@ -16,10 +16,7 @@ export const loginUser = async (email, password) => {
     const response = await api.post("/auth/login", { email, password })
     const { token, user } = response.data
 
-    // Store token in localStorage
     localStorage.setItem("token", token)
-
-    // Set token in axios default headers
     api.defaults.headers.common["Authorization"] = `Bearer ${token}`
 
     return { success: true, user }
@@ -33,12 +30,13 @@ export const loginUser = async (email, password) => {
 }
 
 // Register user
-export const registerUser = async (name, email, password) => {
+export const registerUser = async ({ name, email, password }) => {
   try {
-    await api.post("/auth/register", { name, email, password })
+    console.log("Register user payload:", { name, email, password }) // for debugging
+    await api.post("/auth/signup", { name, email, password })
     return { success: true, message: "Registration successful. Please login." }
   } catch (error) {
-    console.error("Registration error:", error)
+    console.error("Registration error:", error.response?.data || error.message)
     return {
       success: false,
       message: error.response?.data?.message || "Registration failed. Please try again.",
@@ -48,10 +46,7 @@ export const registerUser = async (name, email, password) => {
 
 // Logout user
 export const logoutUser = () => {
-  // Remove token from localStorage
   localStorage.removeItem("token")
-
-  // Remove token from axios default headers
   delete api.defaults.headers.common["Authorization"]
 }
 
@@ -62,7 +57,6 @@ export const getCurrentUser = async () => {
     return { success: true, user: response.data }
   } catch (error) {
     console.error("Get current user error:", error)
-    // If token is invalid, logout user
     logoutUser()
     return { success: false, message: "Failed to get user data." }
   }
@@ -77,7 +71,7 @@ export const updateUserProfile = async (userData) => {
     }
 
     const userId = currentUser.user.id
-    const response = await api.put(`/users/${userId}`, userData)
+    const response = await api.patch(`/users/${userId}`, userData)
 
     return { success: true, user: response.data }
   } catch (error) {
@@ -89,31 +83,3 @@ export const updateUserProfile = async (userData) => {
   }
 }
 
-// Request password reset
-export const requestPasswordReset = async (email) => {
-  try {
-    await api.post("/auth/password-reset-request", { email })
-    return { success: true, message: "Password reset email sent. Please check your inbox." }
-  } catch (error) {
-    console.error("Password reset request error:", error)
-    return {
-      success: false,
-      message: error.response?.data?.message || "Failed to request password reset. Please try again.",
-    }
-  }
-}
-
-// Reset password with token
-export const resetPassword = async (token, password) => {
-  try {
-    await api.post("/auth/reset-password", { token, password })
-    return { success: true, message: "Password reset successful. You can now login with your new password." }
-  } catch (error) {
-    console.error("Password reset error:", error)
-    return {
-      success: false,
-      message: error.response?.data?.message || "Failed to reset password. Please try again.",
-    }
-  }
-}
-// Upload profile picture

@@ -46,7 +46,7 @@ const RegisterPage = () => {
           if (passwordStrengthRegex.hasUpperCase.test(value)) strength++
           if (passwordStrengthRegex.hasNumber.test(value)) strength++
           if (passwordStrengthRegex.hasSpecialChar.test(value)) strength++
-          return strength >= 3 // Require at least 3 of the 4 criteria
+          return strength >= 3
         },
       ),
     confirmPassword: Yup.string()
@@ -66,14 +66,15 @@ const RegisterPage = () => {
         password: values.password,
       }
 
-      await register(userData)
-      setRegistrationSuccess(true)
-      resetForm()
+      const response = await register(userData)
 
-      // Redirect to login after 3 seconds
-      setTimeout(() => {
-        navigate("/login")
-      }, 3000)
+      if (response.success) {
+        setRegistrationSuccess(true)
+        resetForm()
+        setTimeout(() => navigate("/login"), 3000)
+      } else {
+        setRegisterError(response.message || "Registration failed")
+      }
     } catch (error) {
       setRegisterError(error.message || "Registration failed. Please try again.")
     } finally {
@@ -82,9 +83,7 @@ const RegisterPage = () => {
     }
   }
 
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword)
-  }
+  const togglePasswordVisibility = () => setShowPassword(!showPassword)
 
   const getPasswordStrength = (password) => {
     if (!password) return 0
@@ -96,7 +95,7 @@ const RegisterPage = () => {
     if (passwordStrengthRegex.hasNumber.test(password)) strength++
     if (passwordStrengthRegex.hasSpecialChar.test(password)) strength++
 
-    return Math.min(strength, 5) // Max strength is 5
+    return Math.min(strength, 5)
   }
 
   const getPasswordStrengthText = (strength) => {
@@ -106,12 +105,12 @@ const RegisterPage = () => {
 
   const getPasswordStrengthColor = (strength) => {
     const colors = [
-      "bg-red-500", // Very Weak
-      "bg-red-400", // Weak
+      "bg-red-500",    // Very Weak
+      "bg-red-400",    // Weak
       "bg-yellow-500", // Fair
       "bg-yellow-400", // Good
-      "bg-green-400", // Strong
-      "bg-green-500", // Very Strong
+      "bg-green-400",  // Strong
+      "bg-green-500",  // Very Strong
     ]
     return colors[strength] || ""
   }
@@ -127,7 +126,7 @@ const RegisterPage = () => {
           <div className="mt-6">
             <Link
               to="/login"
-              className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700"
             >
               Go to Login
             </Link>
@@ -212,6 +211,7 @@ const RegisterPage = () => {
                       type="button"
                       className="absolute inset-y-0 right-0 pr-3 flex items-center"
                       onClick={togglePasswordVisibility}
+                      tabIndex={-1}
                     >
                       {showPassword ? (
                         <EyeSlashIcon className="h-5 w-5 text-gray-400" />
@@ -231,8 +231,8 @@ const RegisterPage = () => {
                             getPasswordStrength(values.password) <= 1
                               ? "text-red-500"
                               : getPasswordStrength(values.password) <= 3
-                                ? "text-yellow-500"
-                                : "text-green-500"
+                              ? "text-yellow-500"
+                              : "text-green-500"
                           }`}
                         >
                           {getPasswordStrengthText(getPasswordStrength(values.password))}
@@ -250,40 +250,56 @@ const RegisterPage = () => {
                           At least 6 characters
                         </li>
                         <li
-                          className={`flex items-center ${passwordStrengthRegex.hasUpperCase.test(values.password) ? "text-green-500" : ""}`}
+                          className={`flex items-center ${
+                            passwordStrengthRegex.hasUpperCase.test(values.password) ? "text-green-500" : ""
+                          }`}
                         >
                           <span
-                            className={`mr-1 ${passwordStrengthRegex.hasUpperCase.test(values.password) ? "text-green-500" : ""}`}
+                            className={`mr-1 ${
+                              passwordStrengthRegex.hasUpperCase.test(values.password) ? "text-green-500" : ""
+                            }`}
                           >
                             •
                           </span>
                           One uppercase letter
                         </li>
                         <li
-                          className={`flex items-center ${passwordStrengthRegex.hasLowerCase.test(values.password) ? "text-green-500" : ""}`}
+                          className={`flex items-center ${
+                            passwordStrengthRegex.hasLowerCase.test(values.password) ? "text-green-500" : ""
+                          }`}
                         >
                           <span
-                            className={`mr-1 ${passwordStrengthRegex.hasLowerCase.test(values.password) ? "text-green-500" : ""}`}
+                            className={`mr-1 ${
+                              passwordStrengthRegex.hasLowerCase.test(values.password) ? "text-green-500" : ""
+                            }`}
                           >
                             •
                           </span>
                           One lowercase letter
                         </li>
                         <li
-                          className={`flex items-center ${passwordStrengthRegex.hasNumber.test(values.password) ? "text-green-500" : ""}`}
+                          className={`flex items-center ${
+                            passwordStrengthRegex.hasNumber.test(values.password) ? "text-green-500" : ""
+                          }`}
                         >
                           <span
-                            className={`mr-1 ${passwordStrengthRegex.hasNumber.test(values.password) ? "text-green-500" : ""}`}
+                            className={`mr-1 ${
+                              passwordStrengthRegex.hasNumber.test(values.password) ? "text-green-500" : ""
+                            }`}
                           >
                             •
                           </span>
                           One number
                         </li>
                         <li
-                          className={`flex items-center ${passwordStrengthRegex.hasSpecialChar.test(values.password) ? "text-green-500" : ""}`}
+                          className={`flex items-center ${
+                            passwordStrengthRegex.hasSpecialChar.test(values.password) ? "text-green-500" : ""
+                          }`}
                         >
                           <span
-                            className={`mr-1 ${passwordStrengthRegex.hasSpecialChar.test(values.password) ? "text-green-500" : ""}`}
+                            className={`mr-1 ${
+                              passwordStrengthRegex.hasSpecialChar.test(values.password) ? "text-green-500" : ""
+                            }`}
                           >
                             •
                           </span>

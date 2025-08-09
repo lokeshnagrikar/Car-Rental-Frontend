@@ -1,4 +1,5 @@
 "use client"
+
 import { createContext, useContext, useState, useEffect } from "react"
 import {
   loginUser,
@@ -9,19 +10,14 @@ import {
   initializeAuth,
 } from "../services/authService"
 
-// Create the context
 const AuthContext = createContext()
 
-// Custom hook to use the auth context
 export const useAuth = () => {
   const context = useContext(AuthContext)
-  if (!context) {
-    throw new Error("useAuth must be used within an AuthProvider")
-  }
+  if (!context) throw new Error("useAuth must be used within an AuthProvider")
   return context
 }
 
-// Auth provider component
 export const AuthProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null)
   const [isAuthenticated, setIsAuthenticated] = useState(false)
@@ -29,29 +25,23 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
-  // Initialize auth state on component mount
   useEffect(() => {
     const initAuth = async () => {
       setLoading(true)
       try {
-        // Check if token exists in localStorage
         const hasToken = initializeAuth()
-
         if (hasToken) {
-          // Fetch current user data
           const response = await getCurrentUser()
           if (response.success) {
             setCurrentUser(response.user)
             setIsAuthenticated(true)
             setIsAdmin(response.user.role === "ADMIN")
           } else {
-            // If token is invalid, clear auth state
             setCurrentUser(null)
             setIsAuthenticated(false)
             setIsAdmin(false)
           }
         } else {
-          // No token found, ensure auth state is cleared
           setCurrentUser(null)
           setIsAuthenticated(false)
           setIsAdmin(false)
@@ -59,7 +49,6 @@ export const AuthProvider = ({ children }) => {
       } catch (err) {
         console.error("Auth initialization error:", err)
         setError("Failed to initialize authentication")
-        // Ensure auth state is cleared on error
         setCurrentUser(null)
         setIsAuthenticated(false)
         setIsAdmin(false)
@@ -67,11 +56,9 @@ export const AuthProvider = ({ children }) => {
         setLoading(false)
       }
     }
-
     initAuth()
   }, [])
 
-  // Login function
   const login = async (email, password) => {
     setError(null)
     setLoading(true)
@@ -91,11 +78,11 @@ export const AuthProvider = ({ children }) => {
     }
   }
 
-  // Register function
-  const register = async (name, email, password) => {
+  const register = async (userData) => {
     setError(null)
     try {
-      const response = await registerUser(name, email, password)
+      const response = await registerUser(userData)
+      if (!response.success) setError(response.message)
       return response
     } catch (err) {
       setError("Registration failed")
@@ -103,7 +90,6 @@ export const AuthProvider = ({ children }) => {
     }
   }
 
-  // Logout function
   const logout = () => {
     logoutUser()
     setCurrentUser(null)
@@ -111,7 +97,6 @@ export const AuthProvider = ({ children }) => {
     setIsAdmin(false)
   }
 
-  // Update profile function
   const updateProfile = async (userData) => {
     setError(null)
     try {
@@ -126,7 +111,6 @@ export const AuthProvider = ({ children }) => {
     }
   }
 
-  // Refresh user data function
   const refreshUserData = async () => {
     try {
       const response = await getCurrentUser()
@@ -141,7 +125,6 @@ export const AuthProvider = ({ children }) => {
     }
   }
 
-  // Context value
   const value = {
     currentUser,
     isAuthenticated,

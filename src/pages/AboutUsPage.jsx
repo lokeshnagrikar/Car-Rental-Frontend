@@ -352,7 +352,6 @@ const AboutUsPage = () => {
               </p>
             </div>
             <ul
-              role="list"
               className="mx-auto space-y-16 sm:grid sm:grid-cols-2 sm:gap-16 sm:space-y-0 lg:grid-cols-4 lg:max-w-5xl"
             >
               {team.map((person) => (
@@ -374,6 +373,7 @@ const AboutUsPage = () => {
                 </li>
               ))}
             </ul>
+
           </div>
         </div>
       </div>

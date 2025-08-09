@@ -26,7 +26,9 @@ const ProfileSchema = Yup.object().shape({
   email: Yup.string().email("Invalid email address").required("Email is required"),
   password: Yup.string().min(6, "Password must be at least 6 characters"),
   confirmPassword: Yup.string().oneOf([Yup.ref("password"), null], "Passwords must match"),
-  phone: Yup.string().matches(/^[0-9]{10}$/, "Phone number must be 10 digits"),
+  phone: Yup.string()
+  .matches(/^(\+91)?[0-9]{10}$/, "Phone number must be 10 digits, optionally prefixed with +91")
+  .nullable(),
   address: Yup.string(),
   dateOfBirth: Yup.date().nullable(),
   drivingLicense: Yup.string(),
@@ -793,6 +795,8 @@ const ProfilePage = () => {
                                 } rounded-md transition-colors duration-200`}
                               >
                                 <option value="en">English</option>
+                                <option value="en">Hindi</option>
+                                <option value="en">Marathi</option>
                                 <option value="es">Spanish</option>
                                 <option value="fr">French</option>
                                 <option value="de">German</option>
