@@ -33,26 +33,25 @@ A modern, responsive frontend application for a car rental service built with Re
 ## 🔧 Installation & Setup
 
 1. **Clone the repository**
+
    ```
    git clone https://github.com/lokeshnagrikar/Car-Rental-Frontend.git
    cd Car-Rental-Frontend
    ```
 
- 2. **Install dependencies**
+2. **Install dependencies**
+
 ```
 npm install
 # or
 yarn install
-   ```
-
+```
 
 3. **Configure environment variables**
-Create a `.env` file in the root directory with the following variables:
-
+   Create a `.env` file in the root directory with the following variables:
 
 REACT_APP_API_URL=http://localhost:8081/api
 REACT_APP_GOOGLE_MAPS_API_KEY=your_google_maps_api_key
-
 
 4. **Start the development server**
 
@@ -62,16 +61,13 @@ npm start
 yarn start
 ```
 
-
 5. **Access the application**
-Open your browser and navigate to:
+   Open your browser and navigate to:
 
 ```
 http://localhost:3000
 
-   ```
-
-
+```
 
 ## 📁 Project Structure
 
@@ -101,7 +97,6 @@ The application uses JWT (JSON Web Tokens) for authentication:
 3. Token is included in the Authorization header for API requests
 4. Protected routes check for valid token before rendering
 
-
 ## 📱 Key Features Explained
 
 ### User Profile Management
@@ -110,13 +105,11 @@ The application uses JWT (JSON Web Tokens) for authentication:
 - Change password
 - Upload profile picture
 
-
 ### Car Browsing and Filtering
 
 - Browse all available cars
 - Filter by make, model, price range, etc.
 - View detailed information about each car
-
 
 ### Booking Process
 
@@ -126,13 +119,11 @@ The application uses JWT (JSON Web Tokens) for authentication:
 4. Confirm and pay
 5. Receive booking confirmation
 
-
 ### Location Services
 
 - View car locations on Google Maps
 - Search for pickup locations
 - Get directions to pickup locations
-
 
 ## 🔄 Integration with Backend
 
@@ -146,7 +137,6 @@ The application features a modern, clean, and intuitive user interface with:
 - Intuitive navigation and user flows
 - Accessible components following WCAG guidelines
 - Consistent styling and theming throughout
-
 
 ## 🚢 Deployment
 
@@ -167,7 +157,6 @@ This creates an optimized production build in the `build` folder.
 - **GitHub Pages**: Deploy using gh-pages package
 - **AWS S3/CloudFront**: Host as a static website
 
-
 ## 🧪 Testing
 
 Run tests using:
@@ -184,7 +173,6 @@ The application includes:
 - Integration tests for key user flows
 - End-to-end tests for critical paths
 
-
 ## 🛣️ Roadmap
 
 Future enhancements planned for this project:
@@ -196,7 +184,6 @@ Future enhancements planned for this project:
 - Payment gateway integration( still in Processing )
 - Virtual car tours
 
-
 ## 🤝 Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
@@ -207,7 +194,6 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-
 ## 📝 License
 
 This project is licensed under the [MIT License](LICENSE).
@@ -216,16 +202,21 @@ This project is licensed under the [MIT License](LICENSE).
 
 For any questions or suggestions, please open an issue in this repository.
 
+## 📸 Screenshots
 
+![Home Page](./screenshots/home.png)
+![Car Details](./screenshots/car-details.png)
+![Booking Flow](./screenshots/booking.png)
 
 This README provides a comprehensive overview of your Car Rental Frontend project, including setup instructions, features, and project structure. You can customize it further based on specific details of your implementation.
-```
-<Actions>
-  <Action name="Add screenshots" description="Include screenshots of key application pages" />
-  <Action name="Create component documentation" description="Document the key React components and their props" />
-  <Action name="Add state management guide" description="Document the state management approach and structure" />
-  <Action name="Create API integration guide" description="Document how the frontend integrates with the backend API" />
-  <Action name="Add performance optimization tips" description="Include best practices for optimizing the React application" />
-</Actions>
 
-```
+## 📚 API Endpoints
+
+| Method | Endpoint     | Description          |
+| ------ | ------------ | -------------------- |
+| GET    | `/cars`      | List all cars        |
+| POST   | `/bookings`  | Create a new booking |
+| GET    | `/users/:id` | Get user profile     |
+| ...    | ...          | ...                  |
+
+See [Car Rental Backend API Docs](https://github.com/lokeshnagrikar/Car-Rental-Backend) for full details.
