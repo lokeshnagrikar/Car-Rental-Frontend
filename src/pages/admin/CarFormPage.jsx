@@ -130,179 +130,172 @@ const CarFormPage = () => {
       }
 
   return (
-    <div>
-      <div className="mb-6">
+    <div className="max-w-4xl mx-auto">
+      <div className="mb-8">
         <Link
           to="/admin/cars"
-          className="inline-flex items-center text-sm font-medium text-primary-600 hover:text-primary-500"
+          className="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold text-primary-600 hover:text-primary-700 bg-white border border-gray-300 rounded-lg shadow-sm hover:shadow-md transition-all duration-200"
         >
-          <ArrowLeftIcon className="h-5 w-5 mr-1" />
+          <ArrowLeftIcon className="h-4 w-4" />
           Back to Cars
         </Link>
       </div>
 
-      <div className="bg-white shadow overflow-hidden sm:rounded-lg">
-        <div className="px-4 py-5 sm:px-6">
-          <h3 className="text-2xl leading-6 font-bold text-gray-900">{isEditMode ? "Edit Car" : "Add New Car"}</h3>
-          <p className="mt-1 max-w-2xl text-sm text-gray-500">
+      <div className="bg-white shadow-xl rounded-2xl overflow-hidden border border-gray-100">
+        <div className="px-8 py-6 bg-gradient-to-r from-primary-600 to-primary-700">
+          <h3 className="text-3xl font-bold text-white">{isEditMode ? "Edit Car" : "Add New Car"}</h3>
+          <p className="mt-2 text-primary-100">
             {isEditMode ? "Update car information" : "Enter car details"}
           </p>
         </div>
 
         {error && (
-          <div className="px-4 py-5 sm:px-6">
-            <div className="rounded-md bg-red-50 p-4">
+          <div className="mx-8 mt-6">
+            <div className="rounded-xl bg-red-50 border border-red-200 p-4">
               <div className="flex">
                 <div className="ml-3">
-                  <h3 className="text-sm font-medium text-red-800">{error}</h3>
+                  <h3 className="text-sm font-semibold text-red-800">{error}</h3>
                 </div>
               </div>
             </div>
           </div>
         )}
 
-        <div className="border-t border-gray-200 px-4 py-5 sm:px-6">
+        <div className="px-8 py-8">
           <Formik initialValues={initialValues} validationSchema={CarSchema} onSubmit={handleSubmit}>
             {({ isSubmitting, setFieldValue, values }) => (
-              <Form className="space-y-6">
-                <div className="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
-                  <div className="sm:col-span-3">
-                    <label htmlFor="make" className="block text-sm font-medium text-gray-700">
-                      Make
-                    </label>
-                    <div className="mt-1">
+              <Form className="space-y-8">
+                <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
+                  {/* Left Column */}
+                  <div className="space-y-6">
+                    <div>
+                      <label htmlFor="make" className="block text-sm font-semibold text-gray-800 mb-2">
+                        Make *
+                      </label>
                       <Field
                         type="text"
                         name="make"
                         id="make"
-                        className="shadow-sm focus:ring-primary-500 focus:border-primary-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                        className="w-full px-4 py-3 text-base border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200"
+                        placeholder="Enter car make"
                       />
-                      <ErrorMessage name="make" component="div" className="text-red-500 text-xs mt-1" />
+                      <ErrorMessage name="make" component="div" className="text-red-500 text-sm mt-2 font-medium" />
                     </div>
-                  </div>
 
-                  <div className="sm:col-span-3">
-                    <label htmlFor="model" className="block text-sm font-medium text-gray-700">
-                      Model
-                    </label>
-                    <div className="mt-1">
+                    <div>
+                      <label htmlFor="model" className="block text-sm font-semibold text-gray-800 mb-2">
+                        Model *
+                      </label>
                       <Field
                         type="text"
                         name="model"
                         id="model"
-                        className="shadow-sm focus:ring-primary-500 focus:border-primary-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                        className="w-full px-4 py-3 text-base border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200"
+                        placeholder="Enter car model"
                       />
-                      <ErrorMessage name="model" component="div" className="text-red-500 text-xs mt-1" />
+                      <ErrorMessage name="model" component="div" className="text-red-500 text-sm mt-2 font-medium" />
                     </div>
-                  </div>
 
-                  <div className="sm:col-span-2">
-                    <label htmlFor="year" className="block text-sm font-medium text-gray-700">
-                      Year
-                    </label>
-                    <div className="mt-1">
+                    <div>
+                      <label htmlFor="year" className="block text-sm font-semibold text-gray-800 mb-2">
+                        Year *
+                      </label>
                       <Field
                         type="number"
                         name="year"
                         id="year"
-                        className="shadow-sm focus:ring-primary-500 focus:border-primary-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                        className="w-full px-4 py-3 text-base border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200"
                       />
-                      <ErrorMessage name="year" component="div" className="text-red-500 text-xs mt-1" />
+                      <ErrorMessage name="year" component="div" className="text-red-500 text-sm mt-2 font-medium" />
                     </div>
-                  </div>
 
-                  <div className="sm:col-span-2">
-                    <label htmlFor="pricePerDay" className="block text-sm font-medium text-gray-700">
-                      Price Per Day ($)
-                    </label>
-                    <div className="mt-1">
+                    <div>
+                      <label htmlFor="pricePerDay" className="block text-sm font-semibold text-gray-800 mb-2">
+                        Price Per Day ($) *
+                      </label>
                       <Field
                         type="number"
                         name="pricePerDay"
                         id="pricePerDay"
                         step="0.01"
-                        className="shadow-sm focus:ring-primary-500 focus:border-primary-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                        className="w-full px-4 py-3 text-base border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200"
+                        placeholder="0.00"
                       />
-                      <ErrorMessage name="pricePerDay" component="div" className="text-red-500 text-xs mt-1" />
+                      <ErrorMessage name="pricePerDay" component="div" className="text-red-500 text-sm mt-2 font-medium" />
                     </div>
-                  </div>
 
-                  <div className="sm:col-span-2">
-                    <label htmlFor="licensePlate" className="block text-sm font-medium text-gray-700">
-                      License Plate
-                    </label>
-                    <div className="mt-1">
+                    <div>
+                      <label htmlFor="licensePlate" className="block text-sm font-semibold text-gray-800 mb-2">
+                        License Plate
+                      </label>
                       <Field
                         type="text"
                         name="licensePlate"
                         id="licensePlate"
-                        className="shadow-sm focus:ring-primary-500 focus:border-primary-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                        className="w-full px-4 py-3 text-base border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200"
+                        placeholder="Enter license plate"
                       />
-                      <ErrorMessage name="licensePlate" component="div" className="text-red-500 text-xs mt-1" />
+                      <ErrorMessage name="licensePlate" component="div" className="text-red-500 text-sm mt-2 font-medium" />
                     </div>
                   </div>
 
-                  <div className="sm:col-span-2">
-                    <label htmlFor="color" className="block text-sm font-medium text-gray-700">
-                      Color
-                    </label>
-                    <div className="mt-1">
+                  {/* Right Column */}
+                  <div className="space-y-6">
+                    <div>
+                      <label htmlFor="color" className="block text-sm font-semibold text-gray-800 mb-2">
+                        Color
+                      </label>
                       <Field
                         type="text"
                         name="color"
                         id="color"
-                        className="shadow-sm focus:ring-primary-500 focus:border-primary-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                        className="w-full px-4 py-3 text-base border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200"
+                        placeholder="Enter car color"
                       />
-                      <ErrorMessage name="color" component="div" className="text-red-500 text-xs mt-1" />
+                      <ErrorMessage name="color" component="div" className="text-red-500 text-sm mt-2 font-medium" />
                     </div>
-                  </div>
 
-                  <div className="sm:col-span-2">
-                    <label htmlFor="transmission" className="block text-sm font-medium text-gray-700">
-                      Transmission
-                    </label>
-                    <div className="mt-1">
+                    <div>
+                      <label htmlFor="transmission" className="block text-sm font-semibold text-gray-800 mb-2">
+                        Transmission
+                      </label>
                       <Field
                         as="select"
                         name="transmission"
                         id="transmission"
-                        className="shadow-sm focus:ring-primary-500 focus:border-primary-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                        className="w-full px-4 py-3 text-base border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200"
                       >
                         <option value="">Select Transmission</option>
                         <option value="Automatic">Automatic</option>
                         <option value="Manual">Manual</option>
                         <option value="Semi-Automatic">Semi-Automatic</option>
                       </Field>
-                      <ErrorMessage name="transmission" component="div" className="text-red-500 text-xs mt-1" />
+                      <ErrorMessage name="transmission" component="div" className="text-red-500 text-sm mt-2 font-medium" />
                     </div>
-                  </div>
 
-                  <div className="sm:col-span-1">
-                    <label htmlFor="seats" className="block text-sm font-medium text-gray-700">
-                      Seats
-                    </label>
-                    <div className="mt-1">
+                    <div>
+                      <label htmlFor="seats" className="block text-sm font-semibold text-gray-800 mb-2">
+                        Seats
+                      </label>
                       <Field
                         type="number"
                         name="seats"
                         id="seats"
                         min="1"
-                        className="shadow-sm focus:ring-primary-500 focus:border-primary-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                        className="w-full px-4 py-3 text-base border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200"
                       />
-                      <ErrorMessage name="seats" component="div" className="text-red-500 text-xs mt-1" />
+                      <ErrorMessage name="seats" component="div" className="text-red-500 text-sm mt-2 font-medium" />
                     </div>
-                  </div>
 
-                  <div className="sm:col-span-3">
-                    <label htmlFor="fuelType" className="block text-sm font-medium text-gray-700">
-                      Fuel Type
-                    </label>
-                    <div className="mt-1">
+                    <div>
+                      <label htmlFor="fuelType" className="block text-sm font-semibold text-gray-800 mb-2">
+                        Fuel Type
+                      </label>
                       <Field
                         as="select"
                         name="fuelType"
                         id="fuelType"
-                        className="shadow-sm focus:ring-primary-500 focus:border-primary-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                        className="w-full px-4 py-3 text-base border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200"
                       >
                         <option value="">Select Fuel Type</option>
                         <option value="Gasoline">Gasoline</option>
@@ -311,111 +304,119 @@ const CarFormPage = () => {
                         <option value="Hybrid">Hybrid</option>
                         <option value="Plug-in Hybrid">Plug-in Hybrid</option>
                       </Field>
-                      <ErrorMessage name="fuelType" component="div" className="text-red-500 text-xs mt-1" />
+                      <ErrorMessage name="fuelType" component="div" className="text-red-500 text-sm mt-2 font-medium" />
                     </div>
-                  </div>
 
-                  <div className="sm:col-span-3">
-                    <div className="flex items-center">
+                    <div className="flex items-center pt-4">
                       <Field
                         type="checkbox"
                         name="available"
                         id="available"
-                        className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
+                        className="h-5 w-5 text-primary-600 focus:ring-primary-500 border-gray-300 rounded-lg"
                       />
-                      <label htmlFor="available" className="ml-2 block text-sm text-gray-700">
+                      <label htmlFor="available" className="ml-3 block text-sm font-semibold text-gray-800">
                         Available for rent
                       </label>
                     </div>
                   </div>
+                </div>
 
-                  <div className="sm:col-span-6">
-                    <label className="block text-sm font-medium text-gray-700">Car Image</label>
-                    <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
-                      <div className="space-y-1 text-center">
-                        {imagePreview || (isEditMode && car?.imageUrl) ? (
-                          <div className="flex flex-col items-center">
-                            <img
-                              src={
-                                imagePreview || (car?.imageUrl ? `http://localhost:8081/api/files/${car.imageUrl}` : "")
-                              }
-                              alt="Car preview"
-                              className="h-40 w-auto object-cover mb-4"
-                            />
-                            <button
-                              type="button"
-                              onClick={() => {
-                                setImagePreview(null)
-                                setImageFile(null)
-                              }}
-                              className="text-sm text-red-600 hover:text-red-500"
+                {/* Image Upload Section */}
+                <div className="border-t border-gray-200 pt-8">
+                  <label className="block text-lg font-bold text-gray-800 mb-4">Car Image</label>
+                  <div className="border-2 border-dashed border-gray-300 rounded-2xl p-8 transition-all duration-200 hover:border-primary-400 hover:bg-gray-50">
+                    <div className="text-center">
+                      {imagePreview || (isEditMode && car?.imageUrl) ? (
+                        <div className="flex flex-col items-center">
+                          <img
+                            src={
+                              imagePreview || (car?.imageUrl ? `http://localhost:8081/api/files/${car.imageUrl}` : "")
+                            }
+                            alt="Car preview"
+                            className="h-48 w-auto object-cover rounded-lg shadow-lg mb-4"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setImagePreview(null)
+                              setImageFile(null)
+                            }}
+                            className="px-4 py-2 text-sm font-semibold text-red-600 hover:text-red-700 bg-red-50 rounded-lg transition-colors duration-200"
+                          >
+                            Remove image
+                          </button>
+                        </div>
+                      ) : (
+                        <>
+                          <PhotoIcon className="mx-auto h-16 w-16 text-gray-400 mb-4" />
+                          <div className="flex justify-center text-sm text-gray-600">
+                            <label
+                              htmlFor="file-upload"
+                              className="relative cursor-pointer bg-white rounded-md font-semibold text-primary-600 hover:text-primary-700 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-primary-500"
                             >
-                              Remove image
-                            </button>
+                              <span className="px-4 py-2 border border-primary-600 rounded-lg hover:bg-primary-50 transition-colors duration-200">
+                                Upload a file
+                              </span>
+                              <input
+                                id="file-upload"
+                                name="file-upload"
+                                type="file"
+                                className="sr-only"
+                                accept="image/*"
+                                onChange={handleImageChange}
+                              />
+                            </label>
+                            <p className="pl-3 self-center">or drag and drop</p>
                           </div>
-                        ) : (
-                          <>
-                            <PhotoIcon className="mx-auto h-12 w-12 text-gray-400" />
-                            <div className="flex text-sm text-gray-600">
-                              <label
-                                htmlFor="file-upload"
-                                className="relative cursor-pointer bg-white rounded-md font-medium text-primary-600 hover:text-primary-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-primary-500"
-                              >
-                                <span>Upload a file</span>
-                                <input
-                                  id="file-upload"
-                                  name="file-upload"
-                                  type="file"
-                                  className="sr-only"
-                                  accept="image/*"
-                                  onChange={handleImageChange}
-                                />
-                              </label>
-                              <p className="pl-1">or drag and drop</p>
-                            </div>
-                            <p className="text-xs text-gray-500">PNG, JPG, GIF up to 10MB</p>
-                          </>
-                        )}
-                      </div>
+                          <p className="text-sm text-gray-500 mt-2">PNG, JPG, GIF up to 10MB</p>
+                        </>
+                      )}
                     </div>
                   </div>
                 </div>
 
-                <div className="flex justify-end">
+                {/* Action Buttons */}
+                <div className="flex justify-end gap-4 pt-6 border-t border-gray-200">
                   <Link
                     to="/admin/cars"
-                    className="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+                    className="px-8 py-3 text-base font-semibold text-gray-700 bg-white border border-gray-300 rounded-xl shadow-sm hover:shadow-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-all duration-200"
                   >
                     Cancel
                   </Link>
                   <button
                     type="submit"
                     disabled={submitting || isSubmitting}
-                    className="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="px-8 py-3 text-base font-semibold text-white bg-gradient-to-r from-primary-600 to-primary-700 rounded-xl shadow-lg hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 transform hover:scale-105 disabled:hover:scale-100"
                   >
                     {submitting ? (
-                      <svg
-                        className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                      >
-                        <circle
-                          className="opacity-25"
-                          cx="12"
-                          cy="12"
-                          r="10"
-                          stroke="currentColor"
-                          strokeWidth="4"
-                        ></circle>
-                        <path
-                          className="opacity-75"
-                          fill="currentColor"
-                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                        ></path>
-                      </svg>
-                    ) : null}
-                    {isEditMode ? "Update Car" : "Create Car"}
+                      <span className="flex items-center gap-2">
+                        <svg
+                          className="animate-spin h-5 w-5 text-white"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                        >
+                          <circle
+                            className="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                          ></circle>
+                          <path
+                            className="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                          ></path>
+                        </svg>
+                        Processing...
+                      </span>
+                    ) : isEditMode ? (
+                      "Update Car"
+                    ) : (
+                      "Create Car"
+                    )}
                   </button>
                 </div>
               </Form>

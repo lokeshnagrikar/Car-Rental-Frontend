@@ -5,7 +5,7 @@ import { getAllCars } from "../../services/carService"
 import { getAllBookings } from "../../services/bookingService"
 import { getAllUsers } from "../../services/userService"
 import { getAllPayments } from "../../services/paymentService"
-import { UsersIcon, CurrencyDollarIcon, ShoppingBagIcon, TruckIcon } from "@heroicons/react/24/outline"
+import { UsersIcon, CurrencyDollarIcon, ShoppingBagIcon, TruckIcon, CalendarIcon } from "@heroicons/react/24/outline"
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -133,8 +133,10 @@ const DashboardPage = () => {
             label: "Monthly Bookings",
             data: monthlyBookingCounts,
             borderColor: "rgb(99, 102, 241)",
-            backgroundColor: "rgba(99, 102, 241, 0.5)",
-            tension: 0.3,
+            backgroundColor: "rgba(99, 102, 241, 0.1)",
+            borderWidth: 3,
+            tension: 0.4,
+            fill: true,
           },
         ],
       },
@@ -145,20 +147,20 @@ const DashboardPage = () => {
             label: "Car Types",
             data: Object.values(carTypes),
             backgroundColor: [
-              "rgba(255, 99, 132, 0.6)",
-              "rgba(54, 162, 235, 0.6)",
-              "rgba(255, 206, 86, 0.6)",
-              "rgba(75, 192, 192, 0.6)",
-              "rgba(153, 102, 255, 0.6)",
+              "rgba(99, 102, 241, 0.8)",
+              "rgba(59, 130, 246, 0.8)",
+              "rgba(16, 185, 129, 0.8)",
+              "rgba(245, 158, 11, 0.8)",
+              "rgba(139, 92, 246, 0.8)",
             ],
             borderColor: [
-              "rgba(255, 99, 132, 1)",
-              "rgba(54, 162, 235, 1)",
-              "rgba(255, 206, 86, 1)",
-              "rgba(75, 192, 192, 1)",
-              "rgba(153, 102, 255, 1)",
+              "rgba(99, 102, 241, 1)",
+              "rgba(59, 130, 246, 1)",
+              "rgba(16, 185, 129, 1)",
+              "rgba(245, 158, 11, 1)",
+              "rgba(139, 92, 246, 1)",
             ],
-            borderWidth: 1,
+            borderWidth: 2,
           },
         ],
       },
@@ -168,18 +170,18 @@ const DashboardPage = () => {
           {
             data: Object.values(bookingStatusCounts),
             backgroundColor: [
-              "rgba(255, 206, 86, 0.6)", // Pending - Yellow
-              "rgba(54, 162, 235, 0.6)", // Confirmed - Blue
-              "rgba(75, 192, 192, 0.6)", // Completed - Green
-              "rgba(255, 99, 132, 0.6)", // Cancelled - Red
+              "rgba(245, 158, 11, 0.8)", // Pending - Yellow
+              "rgba(59, 130, 246, 0.8)", // Confirmed - Blue
+              "rgba(16, 185, 129, 0.8)", // Completed - Green
+              "rgba(239, 68, 68, 0.8)", // Cancelled - Red
             ],
             borderColor: [
-              "rgba(255, 206, 86, 1)",
-              "rgba(54, 162, 235, 1)",
-              "rgba(75, 192, 192, 1)",
-              "rgba(255, 99, 132, 1)",
+              "rgba(245, 158, 11, 1)",
+              "rgba(59, 130, 246, 1)",
+              "rgba(16, 185, 129, 1)",
+              "rgba(239, 68, 68, 1)",
             ],
-            borderWidth: 1,
+            borderWidth: 2,
           },
         ],
       },
@@ -189,7 +191,10 @@ const DashboardPage = () => {
           {
             label: "Monthly Revenue ($)",
             data: monthlyRevenue,
-            backgroundColor: "rgba(75, 192, 192, 0.6)",
+            backgroundColor: "rgba(16, 185, 129, 0.8)",
+            borderColor: "rgba(16, 185, 129, 1)",
+            borderWidth: 2,
+            borderRadius: 6,
           },
         ],
       },
@@ -202,24 +207,48 @@ const DashboardPage = () => {
     plugins: {
       legend: {
         position: "top",
+        labels: {
+          font: {
+            size: 12,
+            family: "'Inter', sans-serif",
+          },
+          padding: 20,
+        },
+      },
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+        grid: {
+          color: "rgba(0, 0, 0, 0.05)",
+        },
+      },
+      x: {
+        grid: {
+          color: "rgba(0, 0, 0, 0.05)",
+        },
       },
     },
   }
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-600"></div>
+      <div className="flex justify-center items-center h-96">
+        <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-primary-600"></div>
       </div>
     )
   }
 
   if (error) {
     return (
-      <div className="rounded-md bg-red-50 p-4">
-        <div className="flex">
-          <div className="ml-3">
-            <h3 className="text-sm font-medium text-red-800">{error}</h3>
+      <div className="max-w-7xl mx-auto">
+        <div className="rounded-2xl bg-red-50 border border-red-200 p-8 text-center">
+          <div className="flex flex-col items-center">
+            <div className="rounded-full bg-red-100 p-4 mb-4">
+              <ShoppingBagIcon className="h-8 w-8 text-red-600" />
+            </div>
+            <h3 className="text-xl font-semibold text-red-800 mb-2">Failed to load dashboard</h3>
+            <p className="text-red-600">{error}</p>
           </div>
         </div>
       </div>
@@ -227,221 +256,210 @@ const DashboardPage = () => {
   }
 
   return (
-    <div>
-      <h1 className="text-2xl font-semibold text-gray-900">Dashboard</h1>
-      <p className="mt-2 text-sm text-gray-700">An overview of your car rental business</p>
+    <div className="max-w-7xl mx-auto">
+      {/* Header */}
+      <div className="mb-8">
+        <h1 className="text-4xl font-bold text-gray-900">Dashboard Overview</h1>
+        <p className="mt-3 text-lg text-gray-600">Welcome to your car rental management dashboard</p>
+      </div>
 
-      {/* Stats */}
-      <div className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+      {/* Stats Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
         {/* Cars Stats */}
-        <div className="bg-white overflow-hidden shadow rounded-lg hover:shadow-md transition-shadow duration-300">
-          <div className="p-5">
-            <div className="flex items-center">
-              <div className="flex-shrink-0 bg-indigo-100 rounded-full p-3">
-                <TruckIcon className="h-6 w-6 text-indigo-600" aria-hidden="true" />
-              </div>
-              <div className="ml-5 w-0 flex-1">
-                <dl>
-                  <dt className="text-sm font-medium text-gray-500 truncate">Total Cars</dt>
-                  <dd>
-                    <div className="text-lg font-semibold text-gray-900">{stats.totalCars}</div>
-                  </dd>
-                </dl>
-              </div>
+        <div className="bg-gradient-to-br from-primary-500 to-primary-600 rounded-2xl shadow-xl text-white p-6 transform hover:scale-105 transition-all duration-300">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-primary-100 text-sm font-semibold">Total Cars</p>
+              <p className="text-3xl font-bold mt-2">{stats.totalCars}</p>
+              <p className="text-primary-200 text-sm mt-1">{stats.availableCars} available</p>
+            </div>
+            <div className="bg-white bg-opacity-20 rounded-xl p-4">
+              <TruckIcon className="h-8 w-8" />
             </div>
           </div>
-          <div className="bg-gray-50 px-5 py-3">
-            <div className="text-sm">
-              <Link to="/admin/cars" className="font-medium text-primary-700 hover:text-primary-900">
-                View all cars
-              </Link>
-            </div>
-          </div>
+          <Link to="/admin/cars" className="inline-flex items-center mt-4 text-sm text-primary-100 hover:text-white font-medium">
+            Manage fleet →
+          </Link>
         </div>
 
         {/* Bookings Stats */}
-        <div className="bg-white overflow-hidden shadow rounded-lg hover:shadow-md transition-shadow duration-300">
-          <div className="p-5">
-            <div className="flex items-center">
-              <div className="flex-shrink-0 bg-blue-100 rounded-full p-3">
-                <ShoppingBagIcon className="h-6 w-6 text-blue-600" aria-hidden="true" />
-              </div>
-              <div className="ml-5 w-0 flex-1">
-                <dl>
-                  <dt className="text-sm font-medium text-gray-500 truncate">Total Bookings</dt>
-                  <dd>
-                    <div className="text-lg font-semibold text-gray-900">{stats.totalBookings}</div>
-                  </dd>
-                </dl>
-              </div>
+        <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl shadow-xl text-white p-6 transform hover:scale-105 transition-all duration-300">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-blue-100 text-sm font-semibold">Total Bookings</p>
+              <p className="text-3xl font-bold mt-2">{stats.totalBookings}</p>
+              <p className="text-blue-200 text-sm mt-1">{stats.pendingBookings} pending</p>
+            </div>
+            <div className="bg-white bg-opacity-20 rounded-xl p-4">
+              <ShoppingBagIcon className="h-8 w-8" />
             </div>
           </div>
-          <div className="bg-gray-50 px-5 py-3">
-            <div className="text-sm">
-              <Link to="/admin/bookings" className="font-medium text-primary-700 hover:text-primary-900">
-                View all bookings
-              </Link>
-            </div>
-          </div>
+          <Link to="/admin/bookings" className="inline-flex items-center mt-4 text-sm text-blue-100 hover:text-white font-medium">
+            View bookings →
+          </Link>
         </div>
 
         {/* Users Stats */}
-        <div className="bg-white overflow-hidden shadow rounded-lg hover:shadow-md transition-shadow duration-300">
-          <div className="p-5">
-            <div className="flex items-center">
-              <div className="flex-shrink-0 bg-purple-100 rounded-full p-3">
-                <UsersIcon className="h-6 w-6 text-purple-600" aria-hidden="true" />
-              </div>
-              <div className="ml-5 w-0 flex-1">
-                <dl>
-                  <dt className="text-sm font-medium text-gray-500 truncate">Total Users</dt>
-                  <dd>
-                    <div className="text-lg font-semibold text-gray-900">{stats.totalUsers}</div>
-                  </dd>
-                </dl>
-              </div>
+        <div className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl shadow-xl text-white p-6 transform hover:scale-105 transition-all duration-300">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-purple-100 text-sm font-semibold">Total Users</p>
+              <p className="text-3xl font-bold mt-2">{stats.totalUsers}</p>
+              <p className="text-purple-200 text-sm mt-1">Registered customers</p>
+            </div>
+            <div className="bg-white bg-opacity-20 rounded-xl p-4">
+              <UsersIcon className="h-8 w-8" />
             </div>
           </div>
-          <div className="bg-gray-50 px-5 py-3">
-            <div className="text-sm">
-              <Link to="/admin/users" className="font-medium text-primary-700 hover:text-primary-900">
-                View all users
-              </Link>
-            </div>
-          </div>
+          <Link to="/admin/users" className="inline-flex items-center mt-4 text-sm text-purple-100 hover:text-white font-medium">
+            Manage users →
+          </Link>
         </div>
 
         {/* Revenue Stats */}
-        <div className="bg-white overflow-hidden shadow rounded-lg hover:shadow-md transition-shadow duration-300">
-          <div className="p-5">
-            <div className="flex items-center">
-              <div className="flex-shrink-0 bg-green-100 rounded-full p-3">
-                <CurrencyDollarIcon className="h-6 w-6 text-green-600" aria-hidden="true" />
-              </div>
-              <div className="ml-5 w-0 flex-1">
-                <dl>
-                  <dt className="text-sm font-medium text-gray-500 truncate">Total Revenue</dt>
-                  <dd>
-                    <div className="text-lg font-semibold text-gray-900">${stats.totalRevenue.toFixed(2)}</div>
-                  </dd>
-                </dl>
-              </div>
+        <div className="bg-gradient-to-br from-green-500 to-green-600 rounded-2xl shadow-xl text-white p-6 transform hover:scale-105 transition-all duration-300">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-green-100 text-sm font-semibold">Total Revenue</p>
+              <p className="text-3xl font-bold mt-2">${stats.totalRevenue.toFixed(2)}</p>
+              <p className="text-green-200 text-sm mt-1">All time earnings</p>
+            </div>
+            <div className="bg-white bg-opacity-20 rounded-xl p-4">
+              <CurrencyDollarIcon className="h-8 w-8" />
             </div>
           </div>
-          <div className="bg-gray-50 px-5 py-3">
-            <div className="text-sm">
-              <Link to="/admin/payments" className="font-medium text-primary-700 hover:text-primary-900">
-                View all payments
-              </Link>
-            </div>
-          </div>
+          <Link to="/admin/payments" className="inline-flex items-center mt-4 text-sm text-green-100 hover:text-white font-medium">
+            View payments →
+          </Link>
         </div>
       </div>
 
-      {/* Charts */}
-      <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+      {/* Charts Grid */}
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 mb-8">
         {/* Monthly Bookings Chart */}
-        <div className="bg-white rounded-lg shadow p-6 hover:shadow-md transition-shadow duration-300">
-          <h2 className="text-lg font-medium text-gray-900 mb-4">Monthly Bookings</h2>
-          <div className="h-80">{chartData.monthly && <Line options={chartOptions} data={chartData.monthly} />}</div>
+        <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 hover:shadow-xl transition-all duration-300">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-xl font-bold text-gray-900">Monthly Bookings Trend</h2>
+            <CalendarIcon className="h-6 w-6 text-primary-600" />
+          </div>
+          <div className="h-80">
+            {chartData.monthly && <Line data={chartData.monthly} options={chartOptions} />}
+          </div>
         </div>
 
         {/* Monthly Revenue Chart */}
-        <div className="bg-white rounded-lg shadow p-6 hover:shadow-md transition-shadow duration-300">
-          <h2 className="text-lg font-medium text-gray-900 mb-4">Monthly Revenue</h2>
-          <div className="h-80">{chartData.revenue && <Bar options={chartOptions} data={chartData.revenue} />}</div>
+        <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 hover:shadow-xl transition-all duration-300">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-xl font-bold text-gray-900">Revenue Overview</h2>
+            <CurrencyDollarIcon className="h-6 w-6 text-green-600" />
+          </div>
+          <div className="h-80">
+            {chartData.revenue && <Bar data={chartData.revenue} options={chartOptions} />}
+          </div>
         </div>
 
         {/* Car Types Chart */}
-        <div className="bg-white rounded-lg shadow p-6 hover:shadow-md transition-shadow duration-300">
-          <h2 className="text-lg font-medium text-gray-900 mb-4">Car Types Distribution</h2>
-          <div className="h-80">{chartData.carTypes && <Pie options={chartOptions} data={chartData.carTypes} />}</div>
+        <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 hover:shadow-xl transition-all duration-300">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-xl font-bold text-gray-900">Fleet Distribution</h2>
+            <TruckIcon className="h-6 w-6 text-blue-600" />
+          </div>
+          <div className="h-80">
+            {chartData.carTypes && <Pie data={chartData.carTypes} options={chartOptions} />}
+          </div>
         </div>
 
         {/* Booking Status Chart */}
-        <div className="bg-white rounded-lg shadow p-6 hover:shadow-md transition-shadow duration-300">
-          <h2 className="text-lg font-medium text-gray-900 mb-4">Booking Status</h2>
+        <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 hover:shadow-xl transition-all duration-300">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-xl font-bold text-gray-900">Booking Status</h2>
+            <ShoppingBagIcon className="h-6 w-6 text-purple-600" />
+          </div>
           <div className="h-80">
-            {chartData.bookingStatus && <Pie options={chartOptions} data={chartData.bookingStatus} />}
+            {chartData.bookingStatus && <Pie data={chartData.bookingStatus} options={chartOptions} />}
           </div>
         </div>
       </div>
 
       {/* Recent Bookings */}
-      <div className="mt-8">
-        <h2 className="text-lg font-medium text-gray-900">Recent Bookings</h2>
-        <div className="mt-4 bg-white shadow overflow-hidden sm:rounded-md">
-          <ul className="divide-y divide-gray-200">
-            {recentBookings.length === 0 ? (
-              <li className="px-6 py-4 text-center text-gray-500">No recent bookings found</li>
-            ) : (
-              recentBookings.map((booking) => (
-                <li key={booking.id} className="hover:bg-gray-50 transition-colors duration-200">
-                  <div className="px-4 py-4 sm:px-6">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center">
-                        <div className="flex-shrink-0 h-10 w-10 overflow-hidden rounded-md">
-                          {booking.car.imageUrl ? (
-                            <img
-                              src={`http://localhost:8081/api/files/${booking.car.imageUrl}`}
-                              alt={`${booking.car.make} ${booking.car.model}`}
-                              className="h-full w-full object-cover"
-                            />
-                          ) : (
-                            <div className="h-full w-full bg-gray-200 flex items-center justify-center">
-                              <TruckIcon className="h-6 w-6 text-gray-400" />
-                            </div>
-                          )}
-                        </div>
-                        <div className="ml-4">
-                          <div className="text-sm font-medium text-gray-900">
-                            {booking.car.make} {booking.car.model}
-                          </div>
-                          <div className="text-sm text-gray-500">
-                            {new Date(booking.startDate).toLocaleDateString()} -{" "}
-                            {new Date(booking.endDate).toLocaleDateString()}
-                          </div>
-                        </div>
+      <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 hover:shadow-xl transition-all duration-300">
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-xl font-bold text-gray-900">Recent Bookings</h2>
+          <Link 
+            to="/admin/bookings" 
+            className="text-primary-600 hover:text-primary-700 font-semibold text-sm"
+          >
+            View All →
+          </Link>
+        </div>
+        
+        <div className="space-y-4">
+          {recentBookings.length === 0 ? (
+            <div className="text-center py-8">
+              <ShoppingBagIcon className="mx-auto h-12 w-12 text-gray-400 mb-4" />
+              <p className="text-gray-500 text-lg">No recent bookings found</p>
+            </div>
+          ) : (
+            recentBookings.map((booking) => (
+              <div 
+                key={booking.id} 
+                className="flex items-center justify-between p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors duration-200"
+              >
+                <div className="flex items-center space-x-4">
+                  <div className="flex-shrink-0 h-12 w-12 bg-white rounded-lg overflow-hidden border border-gray-200">
+                    {booking.car.imageUrl ? (
+                      <img
+                        src={`http://localhost:8081/api/files/${booking.car.imageUrl}`}
+                        alt={`${booking.car.make} ${booking.car.model}`}
+                        className="h-full w-full object-cover"
+                      />
+                    ) : (
+                      <div className="h-full w-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+                        <TruckIcon className="h-6 w-6 text-gray-400" />
                       </div>
-                      <div className="ml-2 flex-shrink-0 flex">
-                        <Link
-                          to={`/admin/bookings/${booking.id}`}
-                          className="px-2.5 py-1.5 border border-transparent text-xs font-medium rounded text-primary-700 bg-primary-100 hover:bg-primary-200 mr-2"
-                        >
-                          View
-                        </Link>
-                        <span
-                          className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                            booking.status === "CONFIRMED"
-                              ? "bg-green-100 text-green-800"
-                              : booking.status === "CANCELLED"
-                                ? "bg-red-100 text-red-800"
-                                : booking.status === "PENDING"
-                                  ? "bg-yellow-100 text-yellow-800"
-                                  : "bg-blue-100 text-blue-800"
-                          }`}
-                        >
-                          {booking.status}
-                        </span>
-                      </div>
-                    </div>
-                    <div className="mt-2 sm:flex sm:justify-between">
-                      <div className="sm:flex">
-                        <div className="flex items-center text-sm text-gray-500">
-                          <UsersIcon className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" />
-                          {booking.user.name}
-                        </div>
-                      </div>
-                      <div className="mt-2 flex items-center text-sm text-gray-500 sm:mt-0">
-                        <CurrencyDollarIcon className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" />
-                        <p>${booking.totalPrice.toFixed(2)}</p>
-                      </div>
-                    </div>
+                    )}
                   </div>
-                </li>
-              ))
-            )}
-          </ul>
+                  <div>
+                    <h3 className="font-semibold text-gray-900">
+                      {booking.car.make} {booking.car.model}
+                    </h3>
+                    <p className="text-sm text-gray-600">
+                      {new Date(booking.startDate).toLocaleDateString()} - {new Date(booking.endDate).toLocaleDateString()}
+                    </p>
+                    <p className="text-sm text-gray-500 flex items-center mt-1">
+                      <UsersIcon className="h-4 w-4 mr-1" />
+                      {booking.user.name}
+                    </p>
+                  </div>
+                </div>
+                
+                <div className="flex items-center space-x-4">
+                  <div className="text-right">
+                    <p className="text-lg font-bold text-gray-900">${booking.totalPrice.toFixed(2)}</p>
+                    <span
+                      className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${
+                        booking.status === "CONFIRMED"
+                          ? "bg-green-100 text-green-800"
+                          : booking.status === "CANCELLED"
+                            ? "bg-red-100 text-red-800"
+                            : booking.status === "PENDING"
+                              ? "bg-yellow-100 text-yellow-800"
+                              : "bg-blue-100 text-blue-800"
+                      }`}
+                    >
+                      {booking.status}
+                    </span>
+                  </div>
+                  <Link
+                    to={`/booking-details/${booking.id}`}
+                    className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors duration-200 font-semibold text-sm"
+                  >
+                    View
+                  </Link>
+                </div>
+              </div>
+            ))
+          )}
         </div>
       </div>
     </div>

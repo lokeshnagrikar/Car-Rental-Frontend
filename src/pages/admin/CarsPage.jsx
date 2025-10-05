@@ -64,10 +64,12 @@ const CarsPage = () => {
 
   if (error) {
     return (
-      <div className="rounded-md bg-red-50 p-4">
-        <div className="flex">
-          <div className="ml-3">
-            <h3 className="text-sm font-medium text-red-800">{error}</h3>
+      <div className="max-w-4xl mx-auto">
+        <div className="rounded-xl bg-red-50 border border-red-200 p-6">
+          <div className="flex">
+            <div className="ml-3">
+              <h3 className="text-lg font-semibold text-red-800">{error}</h3>
+            </div>
           </div>
         </div>
       </div>
@@ -75,36 +77,41 @@ const CarsPage = () => {
   }
 
   return (
-    <div>
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-semibold text-gray-900">Cars</h1>
+    <div className="max-w-7xl mx-auto">
+      {/* Header Section */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900">Car Management</h1>
+          <p className="mt-2 text-lg text-gray-600">Manage your rental fleet</p>
+        </div>
         <Link
           to="/admin/cars/add"
-          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+          className="inline-flex items-center justify-center px-6 py-3 text-base font-semibold text-white bg-gradient-to-r from-primary-600 to-primary-700 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
         >
           <PlusIcon className="h-5 w-5 mr-2" />
           Add New Car
         </Link>
       </div>
 
-      <div className="mb-6">
-        <div className="mt-1 relative rounded-md shadow-sm">
-          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+      {/* Search Section */}
+      <div className="mb-8">
+        <div className="relative rounded-xl shadow-sm">
+          <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
             <MagnifyingGlassIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
           </div>
           <input
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="focus:ring-primary-500 focus:border-primary-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md"
-            placeholder="Search cars by make, model, or year"
+            className="block w-full pl-12 pr-12 py-4 text-base border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200"
+            placeholder="Search cars by make, model, or year..."
           />
           {searchTerm && (
-            <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
+            <div className="absolute inset-y-0 right-0 pr-4 flex items-center">
               <button
                 type="button"
                 onClick={() => setSearchTerm("")}
-                className="text-gray-400 hover:text-gray-500 focus:outline-none"
+                className="text-gray-400 hover:text-gray-600 focus:outline-none transition-colors duration-200"
               >
                 <XMarkIcon className="h-5 w-5" aria-hidden="true" />
               </button>
@@ -113,65 +120,94 @@ const CarsPage = () => {
         </div>
       </div>
 
-      <div className="bg-white shadow overflow-hidden sm:rounded-md">
-        <ul className="divide-y divide-gray-200">
-          {filteredCars.length === 0 ? (
-            <li className="px-6 py-4 text-center text-gray-500">No cars found</li>
-          ) : (
-            filteredCars.map((car) => (
-              <li key={car.id}>
-                <div className="px-4 py-4 sm:px-6">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center">
-                      <div className="flex-shrink-0 h-16 w-16 overflow-hidden rounded-md">
-                        {car.imageUrl ? (
-                          <img
-                            src={`http://localhost:8081/api/files/${car.imageUrl}`}
-                            alt={`${car.make} ${car.model}`}
-                            className="h-full w-full object-cover"
-                          />
-                        ) : (
-                          <div className="h-full w-full bg-gray-200 flex items-center justify-center">
-                            <TruckIcon className="h-8 w-8 text-gray-400" />
-                          </div>
-                        )}
-                      </div>
-                      <div className="ml-4">
-                        <div className="text-sm font-medium text-gray-900">
-                          {car.make} {car.model} ({car.year})
-                        </div>
-                        <div className="text-sm text-gray-500">
-                          {car.transmission} · {car.fuelType} · {car.seats} seats
-                        </div>
-                      </div>
-                    </div>
-                    <div className="flex flex-col items-end">
-                      <div className="text-sm font-medium text-gray-900">${car.pricePerDay}/day</div>
-                      <div className="mt-2">
-                        <span
-                          className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                            car.available ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
-                          }`}
-                        >
-                          {car.available ? "Available" : "Not Available"}
-                        </span>
-                      </div>
-                    </div>
+      {/* Cars Grid */}
+      {filteredCars.length === 0 ? (
+        <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-12 text-center">
+          <TruckIcon className="mx-auto h-16 w-16 text-gray-400 mb-4" />
+          <h3 className="text-xl font-semibold text-gray-900 mb-2">No cars found</h3>
+          <p className="text-gray-600 mb-6">Try adjusting your search or add a new car to your fleet.</p>
+          <Link
+            to="/admin/cars/add"
+            className="inline-flex items-center px-6 py-3 text-base font-semibold text-white bg-primary-600 rounded-lg hover:bg-primary-700 transition-colors duration-200"
+          >
+            <PlusIcon className="h-5 w-5 mr-2" />
+            Add Your First Car
+          </Link>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredCars.map((car) => (
+            <div
+              key={car.id}
+              className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
+            >
+              {/* Car Image */}
+              <div className="h-48 bg-gray-200 relative overflow-hidden">
+                {car.imageUrl ? (
+                  <img
+                    src={`http://localhost:8081/api/files/${car.imageUrl}`}
+                    alt={`${car.make} ${car.model}`}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+                    <TruckIcon className="h-16 w-16 text-gray-400" />
                   </div>
-                  <div className="mt-4 flex justify-end space-x-3">
-                    <Link
-                      to={`/admin/cars/edit/${car.id}`}
-                      className="inline-flex items-center px-3 py-1 border border-transparent text-sm font-medium rounded-md text-primary-700 bg-primary-100 hover:bg-primary-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
-                    >
-                      <PencilIcon className="h-4 w-4 mr-1" />
-                      Edit
-                    </Link>
-                    <button
-                      onClick={() => handleDeleteCar(car.id)}
-                      disabled={deleteLoading === car.id}
-                      className="inline-flex items-center px-3 py-1 border border-transparent text-sm font-medium rounded-md text-red-700 bg-red-100 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-                    >
-                      {deleteLoading === car.id ? (
+                )}
+                <div className="absolute top-4 right-4">
+                  <span
+                    className={`px-3 py-1 rounded-full text-sm font-semibold ${
+                      car.available
+                        ? "bg-green-100 text-green-800 border border-green-200"
+                        : "bg-red-100 text-red-800 border border-red-200"
+                    }`}
+                  >
+                    {car.available ? "Available" : "Not Available"}
+                  </span>
+                </div>
+              </div>
+
+              {/* Car Details */}
+              <div className="p-6">
+                <div className="mb-4">
+                  <h3 className="text-xl font-bold text-gray-900 mb-1">
+                    {car.make} {car.model}
+                  </h3>
+                  <p className="text-lg text-primary-600 font-semibold mb-3">${car.pricePerDay}/day</p>
+                  <div className="flex items-center text-sm text-gray-600 mb-2">
+                    <span className="font-medium">Year:</span>
+                    <span className="ml-2">{car.year}</span>
+                  </div>
+                  <div className="flex items-center text-sm text-gray-600 mb-2">
+                    <span className="font-medium">Transmission:</span>
+                    <span className="ml-2">{car.transmission || "N/A"}</span>
+                  </div>
+                  <div className="flex items-center text-sm text-gray-600 mb-2">
+                    <span className="font-medium">Fuel:</span>
+                    <span className="ml-2">{car.fuelType || "N/A"}</span>
+                  </div>
+                  <div className="flex items-center text-sm text-gray-600">
+                    <span className="font-medium">Seats:</span>
+                    <span className="ml-2">{car.seats || "N/A"}</span>
+                  </div>
+                </div>
+
+                {/* Action Buttons */}
+                <div className="flex justify-between items-center pt-4 border-t border-gray-200">
+                  <Link
+                    to={`/admin/cars/edit/${car.id}`}
+                    className="inline-flex items-center px-4 py-2 text-sm font-semibold text-primary-700 bg-primary-50 rounded-lg hover:bg-primary-100 transition-colors duration-200"
+                  >
+                    <PencilIcon className="h-4 w-4 mr-2" />
+                    Edit
+                  </Link>
+                  <button
+                    onClick={() => handleDeleteCar(car.id)}
+                    disabled={deleteLoading === car.id}
+                    className="inline-flex items-center px-4 py-2 text-sm font-semibold text-red-700 bg-red-50 rounded-lg hover:bg-red-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+                  >
+                    {deleteLoading === car.id ? (
+                      <>
                         <svg
                           className="animate-spin -ml-1 mr-2 h-4 w-4 text-red-700"
                           xmlns="http://www.w3.org/2000/svg"
@@ -192,18 +228,33 @@ const CarsPage = () => {
                             d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                           ></path>
                         </svg>
-                      ) : (
-                        <TrashIcon className="h-4 w-4 mr-1" />
-                      )}
-                      Delete
-                    </button>
-                  </div>
+                        Deleting...
+                      </>
+                    ) : (
+                      <>
+                        <TrashIcon className="h-4 w-4 mr-2" />
+                        Delete
+                      </>
+                    )}
+                  </button>
                 </div>
-              </li>
-            ))
-          )}
-        </ul>
-      </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Results Count */}
+      {filteredCars.length > 0 && (
+        <div className="mt-8 text-center">
+          <p className="text-gray-600">
+            Showing <span className="font-semibold">{filteredCars.length}</span> car{filteredCars.length !== 1 ? 's' : ''}
+            {searchTerm && (
+              <span> for "<span className="font-semibold">{searchTerm}</span>"</span>
+            )}
+          </p>
+        </div>
+      )}
     </div>
   )
 }

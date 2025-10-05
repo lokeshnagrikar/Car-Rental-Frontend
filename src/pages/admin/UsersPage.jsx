@@ -11,6 +11,7 @@ import {
   MagnifyingGlassIcon,
   XMarkIcon,
   ShieldCheckIcon,
+  EnvelopeIcon,
 } from "@heroicons/react/24/outline"
 import toast from "react-hot-toast"
 
@@ -88,18 +89,22 @@ const UsersPage = () => {
 
   if (loading && users.length === 0) {
     return (
-      <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-600"></div>
+      <div className="flex justify-center items-center h-96">
+        <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-primary-600"></div>
       </div>
     )
   }
 
   if (error) {
     return (
-      <div className="rounded-md bg-red-50 p-4">
-        <div className="flex">
-          <div className="ml-3">
-            <h3 className="text-sm font-medium text-red-800">{error}</h3>
+      <div className="max-w-7xl mx-auto">
+        <div className="rounded-2xl bg-red-50 border border-red-200 p-8 text-center">
+          <div className="flex flex-col items-center">
+            <div className="rounded-full bg-red-100 p-4 mb-4">
+              <UsersIcon className="h-8 w-8 text-red-600" />
+            </div>
+            <h3 className="text-xl font-semibold text-red-800 mb-2">Failed to load users</h3>
+            <p className="text-red-600">{error}</p>
           </div>
         </div>
       </div>
@@ -107,12 +112,16 @@ const UsersPage = () => {
   }
 
   return (
-    <div>
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-semibold text-gray-900">Users</h1>
+    <div className="max-w-7xl mx-auto">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900">User Management</h1>
+          <p className="mt-2 text-lg text-gray-600">Manage users and administrator accounts</p>
+        </div>
         <button
           onClick={() => setShowAddAdmin(!showAddAdmin)}
-          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+          className="inline-flex items-center justify-center px-6 py-3 text-base font-semibold text-white bg-gradient-to-r from-primary-600 to-primary-700 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
         >
           {showAddAdmin ? (
             <>
@@ -128,84 +137,103 @@ const UsersPage = () => {
         </button>
       </div>
 
+      {/* Add Admin Form */}
       {showAddAdmin && (
-        <div className="bg-white shadow-md rounded-lg p-6 mb-6">
-          <h2 className="text-lg font-medium text-gray-900 mb-4">Create Admin User</h2>
+        <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-8 mb-8 hover:shadow-xl transition-all duration-300">
+          <div className="flex items-center mb-6">
+            <div className="bg-primary-100 rounded-xl p-3 mr-4">
+              <ShieldCheckIcon className="h-8 w-8 text-primary-600" />
+            </div>
+            <div>
+              <h2 className="text-2xl font-bold text-gray-900">Create Admin User</h2>
+              <p className="text-gray-600 mt-1">Add a new administrator to the system</p>
+            </div>
+          </div>
+          
           <Formik
             initialValues={{ name: "", email: "", password: "" }}
             validationSchema={AdminSchema}
             onSubmit={handleAddAdmin}
           >
             {({ isSubmitting }) => (
-              <Form className="space-y-4">
-                <div>
-                  <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-                    Name
-                  </label>
-                  <Field
-                    type="text"
-                    name="name"
-                    id="name"
-                    className="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                  />
-                  <ErrorMessage name="name" component="div" className="text-red-500 text-xs mt-1" />
+              <Form className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label htmlFor="name" className="block text-sm font-semibold text-gray-800 mb-2">
+                      Full Name *
+                    </label>
+                    <Field
+                      type="text"
+                      name="name"
+                      id="name"
+                      className="w-full px-4 py-3 text-base border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200"
+                      placeholder="Enter full name"
+                    />
+                    <ErrorMessage name="name" component="div" className="text-red-500 text-sm mt-2 font-medium" />
+                  </div>
+
+                  <div>
+                    <label htmlFor="email" className="block text-sm font-semibold text-gray-800 mb-2">
+                      Email Address *
+                    </label>
+                    <Field
+                      type="email"
+                      name="email"
+                      id="email"
+                      className="w-full px-4 py-3 text-base border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200"
+                      placeholder="Enter email address"
+                    />
+                    <ErrorMessage name="email" component="div" className="text-red-500 text-sm mt-2 font-medium" />
+                  </div>
+
+                  <div className="md:col-span-2">
+                    <label htmlFor="password" className="block text-sm font-semibold text-gray-800 mb-2">
+                      Password *
+                    </label>
+                    <Field
+                      type="password"
+                      name="password"
+                      id="password"
+                      className="w-full px-4 py-3 text-base border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200"
+                      placeholder="Enter password (min. 6 characters)"
+                    />
+                    <ErrorMessage name="password" component="div" className="text-red-500 text-sm mt-2 font-medium" />
+                  </div>
                 </div>
 
-                <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                    Email
-                  </label>
-                  <Field
-                    type="email"
-                    name="email"
-                    id="email"
-                    className="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                  />
-                  <ErrorMessage name="email" component="div" className="text-red-500 text-xs mt-1" />
-                </div>
-
-                <div>
-                  <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                    Password
-                  </label>
-                  <Field
-                    type="password"
-                    name="password"
-                    id="password"
-                    className="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                  />
-                  <ErrorMessage name="password" component="div" className="text-red-500 text-xs mt-1" />
-                </div>
-
-                <div className="flex justify-end">
+                <div className="flex justify-end pt-4">
                   <button
                     type="submit"
                     disabled={addingAdmin || isSubmitting}
-                    className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="inline-flex items-center justify-center px-8 py-3 text-base font-semibold text-white bg-gradient-to-r from-primary-600 to-primary-700 rounded-xl shadow-lg hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 transform hover:scale-105 disabled:hover:scale-100"
                   >
                     {addingAdmin ? (
-                      <svg
-                        className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                      >
-                        <circle
-                          className="opacity-25"
-                          cx="12"
-                          cy="12"
-                          r="10"
-                          stroke="currentColor"
-                          strokeWidth="4"
-                        ></circle>
-                        <path
-                          className="opacity-75"
-                          fill="currentColor"
-                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                        ></path>
-                      </svg>
-                    ) : null}
-                    Create Admin
+                      <span className="flex items-center gap-2">
+                        <svg
+                          className="animate-spin h-5 w-5 text-white"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                        >
+                          <circle
+                            className="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                          ></circle>
+                          <path
+                            className="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                          ></path>
+                        </svg>
+                        Creating Admin...
+                      </span>
+                    ) : (
+                      "Create Admin User"
+                    )}
                   </button>
                 </div>
               </Form>
@@ -214,24 +242,25 @@ const UsersPage = () => {
         </div>
       )}
 
-      <div className="mb-6">
-        <div className="mt-1 relative rounded-md shadow-sm">
-          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+      {/* Search Section */}
+      <div className="mb-8">
+        <div className="relative rounded-xl shadow-sm">
+          <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
             <MagnifyingGlassIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
           </div>
           <input
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="focus:ring-primary-500 focus:border-primary-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md"
-            placeholder="Search users by name or email"
+            className="block w-full pl-12 pr-12 py-4 text-base border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200"
+            placeholder="Search users by name or email..."
           />
           {searchTerm && (
-            <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
+            <div className="absolute inset-y-0 right-0 pr-4 flex items-center">
               <button
                 type="button"
                 onClick={() => setSearchTerm("")}
-                className="text-gray-400 hover:text-gray-500 focus:outline-none"
+                className="text-gray-400 hover:text-gray-600 focus:outline-none transition-colors duration-200"
               >
                 <XMarkIcon className="h-5 w-5" aria-hidden="true" />
               </button>
@@ -240,45 +269,81 @@ const UsersPage = () => {
         </div>
       </div>
 
-      <div className="bg-white shadow overflow-hidden sm:rounded-md">
-        <div className="px-4 py-5 border-b border-gray-200 sm:px-6">
+      {/* Users Grid */}
+      <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden hover:shadow-xl transition-all duration-300">
+        {/* Header */}
+        <div className="px-8 py-6 bg-gradient-to-r from-gray-50 to-gray-100 border-b border-gray-200">
           <div className="flex items-center">
-            <UsersIcon className="h-5 w-5 text-gray-400 mr-2" />
-            <h3 className="text-lg leading-6 font-medium text-gray-900">Users ({filteredUsers.length})</h3>
+            <div className="bg-primary-600 rounded-xl p-3 mr-4">
+              <UsersIcon className="h-6 w-6 text-white" />
+            </div>
+            <div>
+              <h3 className="text-xl font-bold text-gray-900">User Accounts</h3>
+              <p className="text-gray-600 mt-1">
+                {filteredUsers.length} user{filteredUsers.length !== 1 ? 's' : ''} found
+                {searchTerm && ` for "${searchTerm}"`}
+              </p>
+            </div>
           </div>
         </div>
-        <ul className="divide-y divide-gray-200">
+
+        {/* Users List */}
+        <div className="divide-y divide-gray-100">
           {filteredUsers.length === 0 ? (
-            <li className="px-6 py-4 text-center text-gray-500">No users found</li>
+            <div className="text-center py-12">
+              <UsersIcon className="mx-auto h-16 w-16 text-gray-400 mb-4" />
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">No users found</h3>
+              <p className="text-gray-600 mb-6">Try adjusting your search criteria</p>
+              {searchTerm && (
+                <button
+                  onClick={() => setSearchTerm("")}
+                  className="px-6 py-3 text-base font-semibold text-primary-600 bg-primary-50 rounded-lg hover:bg-primary-100 transition-colors duration-200"
+                >
+                  Clear Search
+                </button>
+              )}
+            </div>
           ) : (
             filteredUsers.map((user) => (
-              <li key={user.id}>
-                <div className="px-4 py-4 sm:px-6">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center">
-                      <div className="flex-shrink-0">
-                        <UserIcon className="h-10 w-10 text-gray-400" />
+              <div key={user.id} className="px-8 py-6 hover:bg-gray-50 transition-colors duration-200">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-4">
+                    <div className={`rounded-xl p-4 ${
+                      user.role === "ADMIN" 
+                        ? "bg-purple-100 text-purple-600" 
+                        : "bg-blue-100 text-blue-600"
+                    }`}>
+                      <UserIcon className="h-6 w-6" />
+                    </div>
+                    <div>
+                      <div className="flex items-center space-x-3">
+                        <h4 className="text-lg font-semibold text-gray-900">{user.name}</h4>
+                        <span
+                          className={`px-3 py-1 rounded-full text-sm font-semibold ${
+                            user.role === "ADMIN" 
+                              ? "bg-purple-100 text-purple-800 border border-purple-200" 
+                              : "bg-green-100 text-green-800 border border-green-200"
+                          }`}
+                        >
+                          {user.role === "ADMIN" && <ShieldCheckIcon className="h-3 w-3 inline mr-1" />}
+                          {user.role}
+                        </span>
                       </div>
-                      <div className="ml-4">
-                        <div className="text-sm font-medium text-gray-900">{user.name}</div>
-                        <div className="text-sm text-gray-500">{user.email}</div>
+                      <div className="flex items-center text-gray-600 mt-1">
+                        <EnvelopeIcon className="h-4 w-4 mr-2" />
+                        <span className="text-sm">{user.email}</span>
                       </div>
                     </div>
-                    <div className="flex items-center">
-                      <span
-                        className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                          user.role === "ADMIN" ? "bg-purple-100 text-purple-800" : "bg-green-100 text-green-800"
-                        }`}
-                      >
-                        {user.role === "ADMIN" ? <ShieldCheckIcon className="h-4 w-4 mr-1" /> : null}
-                        {user.role}
-                      </span>
-                      <button
-                        onClick={() => handleDeleteUser(user.id)}
-                        disabled={deleteLoading === user.id}
-                        className="ml-4 inline-flex items-center px-3 py-1 border border-transparent text-sm font-medium rounded-md text-red-700 bg-red-100 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-                      >
-                        {deleteLoading === user.id ? (
+                  </div>
+                  
+                  <div className="flex items-center space-x-3">
+                    <button
+                      onClick={() => handleDeleteUser(user.id)}
+                      disabled={deleteLoading === user.id}
+                      className="inline-flex items-center px-4 py-2 text-sm font-semibold text-red-700 bg-red-50 rounded-lg hover:bg-red-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+                    >
+                      {deleteLoading === user.id ? (
+                        <>
                           <svg
                             className="animate-spin -ml-1 mr-2 h-4 w-4 text-red-700"
                             xmlns="http://www.w3.org/2000/svg"
@@ -299,18 +364,21 @@ const UsersPage = () => {
                               d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                             ></path>
                           </svg>
-                        ) : (
-                          <TrashIcon className="h-4 w-4 mr-1" />
-                        )}
-                        Delete
-                      </button>
-                    </div>
+                          Deleting...
+                        </>
+                      ) : (
+                        <>
+                          <TrashIcon className="h-4 w-4 mr-2" />
+                          Delete
+                        </>
+                      )}
+                    </button>
                   </div>
                 </div>
-              </li>
+              </div>
             ))
           )}
-        </ul>
+        </div>
       </div>
     </div>
   )
