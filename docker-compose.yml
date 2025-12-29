@@ -1,0 +1,11 @@
+version: "3.8"
+services:
+  frontend:
+    build:
+      context: .
+      args:
+        REACT_APP_API_URL: ${REACT_APP_API_URL:-http://localhost:8081/api}
+    ports:
+      - "3000:80"
+    environment:
+      - NODE_ENV=production
